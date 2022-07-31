@@ -5,7 +5,7 @@ import { CheckTutorial } from './providers/check-tutorial.service';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/tutorial',
+    redirectTo: '/app',
     pathMatch: 'full'
   },
   {
@@ -32,7 +32,20 @@ const routes: Routes = [
     path: 'tutorial',
     loadChildren: () => import('./pages/tutorial/tutorial.module').then(m => m.TutorialModule),
     canLoad: [CheckTutorial]
+  },
+  {
+    path: 'upcoming',
+    loadChildren: () => import('./pages/upcoming/upcoming.module').then( m => m.UpcomingPageModule)
+  },
+  {
+    path: 'live',
+    loadChildren: () => import('./pages/live/live.module').then( m => m.LivePageModule)
+  },
+  {
+    path: 'history',
+    loadChildren: () => import('./pages/history/history.module').then( m => m.HistoryPageModule)
   }
+
 ];
 
 @NgModule({

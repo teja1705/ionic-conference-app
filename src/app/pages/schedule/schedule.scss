@@ -32,4 +32,13 @@ $categories: (
     border-left: 2px solid $value;
     padding-left: 10px;
   }
+
+super-tabs-toolbar{
+  --super-tabs-toolbar-background : var(--ion-item-background, white);
+  --st-indicator-color : var(--ion-color-primary, #3880ff);
+  --st-indicator-height : 3px;
+}
+ion-header::after{
+  height: 0px !important;
+}
 }

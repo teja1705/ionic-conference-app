@@ -5,6 +5,13 @@ import { AlertController, IonList, IonRouterOutlet, LoadingController, ModalCont
 import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
 import { ConferenceData } from '../../providers/conference-data';
 import { UserData } from '../../providers/user-data';
+import { SuperTabs } from '@ionic-super-tabs/angular';
+import { UpcomingPage } from '../upcoming/upcoming.page';
+import { LivePage } from '../live/live.page';
+import { HistoryPage } from '../history/history.page';
+import { SuperTabsConfig } from '@ionic-super-tabs/core';
+
+
 
 @Component({
   selector: 'page-schedule',
@@ -18,12 +25,38 @@ export class SchedulePage implements OnInit {
   ios: boolean;
   dayIndex = 0;
   queryText = '';
-  segment = 'all';
+  segment = 'upcoming';
   excludeTracks: any = [];
   shownSessions: any = [];
   groups: any = [];
   confDate: string;
   showSearchbar: boolean;
+  tabsLoaded:boolean = false;
+  selectedTabIndex = 0;
+  upcomingPage = UpcomingPage;
+  livePage = LivePage;
+  historyPage = HistoryPage;
+  @ViewChild(SuperTabs) superTabs: SuperTabs;
+
+  opts = {
+    icon: false,
+    label: true,
+    toolbarPos: 'top',
+    scrollable: true,
+  };
+
+  configure: SuperTabsConfig = {
+    debug: true,
+    allowElementScroll: false,
+  };
+
+
+  tabs = [
+    { pageName: UpcomingPage, title: 'Upcoming',id: 'upcomingPage'},
+    { pageName: LivePage, title: 'Live', id: 'livePage'},
+    { pageName: HistoryPage, title: 'History', id: 'historyPage'}
+
+    ];   
 
   constructor(
     public alertCtrl: AlertController,
@@ -41,7 +74,12 @@ export class SchedulePage implements OnInit {
     this.updateSchedule();
 
     this.ios = this.config.get('mode') === 'ios';
+    this.tabsLoaded = true;
   }
+
+  onTabSelect(ev: any) {
+    this.selectedTabIndex = ev.index;
+    } 
 
   updateSchedule() {
     // Close any open sliding items when the schedule updates

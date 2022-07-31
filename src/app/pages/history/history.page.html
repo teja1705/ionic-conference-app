@@ -1,0 +1,33 @@
+
+<ion-content fullscreen="true">
+  <ion-list #scheduleList [hidden]="sportList.length == 0">
+    <ion-item-group *ngFor="let sport of sportList">
+      <ion-item-divider sticky>
+        <ion-label>
+          <h4>{{sport.date}} - {{sport.month}} - {{sport.year}}</h4>
+        </ion-label>
+      </ion-item-divider>
+
+      <ion-card  *ngFor="let match of sport.matches">
+        <ion-item-divider sticky>
+          <ion-label>
+            {{match.League}}
+          </ion-label>
+        </ion-item-divider>
+        <ion-card-header>
+          <ion-card-subtitle>{{match.team1}} vs {{match.team2}}</ion-card-subtitle>
+          <!-- <ion-card-title>Card Title</ion-card-title> -->
+        </ion-card-header>
+      
+        <ion-card-content>
+          <ion-lable>{{match.startTime}}</ion-lable>
+        </ion-card-content>
+      </ion-card>
+    </ion-item-group>
+  </ion-list>
+
+  <ion-list-header [hidden]="sportList.length > 0">
+    No Matches Found
+  </ion-list-header>
+
+</ion-content>
