@@ -31,7 +31,7 @@ export class PredictionEffects {
     .pipe(ofType(predictionActions.GetHomePageUpcomingMatchesAction))
     .pipe(
       switchMap((action) => {
-        return this.predictionService.getHomePageUpcomingMatches().pipe(
+        return this.predictionService.getHomePageUpcomingMatches(action.userId).pipe(
           switchMap( matches => [
             predictionActions.GetHomePageUpcomingMatchesSuccessAction({details : matches, sport : action.sport})
           ]),
@@ -45,7 +45,7 @@ export class PredictionEffects {
     .pipe(ofType(predictionActions.GetHomePageLiveMatchesAction))
     .pipe(
       switchMap((action) => {
-        return this.predictionService.getHomePageLiveMatches().pipe(
+        return this.predictionService.getHomePageLiveMatches(action.userId).pipe(
           switchMap( matches => [
             predictionActions.GetHomePageLiveMatchesSuccessAction({details : matches, sport : action.sport})
           ]),
@@ -59,11 +59,53 @@ export class PredictionEffects {
     .pipe(ofType(predictionActions.GetHomePageHistoryMatchesAction))
     .pipe(
       switchMap((action) => {
-        return this.predictionService.getHomePageHistoryMatches().pipe(
+        return this.predictionService.getHomePageHistoryMatches(action.userId).pipe(
           switchMap( matches => [
             predictionActions.GetHomePageHistoryMatchesSuccessAction({details : matches, sport : action.sport})
           ]),
           catchError(error => of(predictionActions.GetHomePageHistoryMatchesFailureAction(error)))
+        );
+      })
+  );
+
+  @Effect()
+  getMatchContests$ = this.actions$
+    .pipe(ofType(predictionActions.GetMatchContestsByMatchIdAction))
+    .pipe(
+      switchMap((action) => {
+        return this.predictionService.getMatchContestData(action.matchId).pipe(
+          switchMap( contest => [
+            predictionActions.GetMatchContestsByMatchIdSuccessAction({contest : contest})
+          ]),
+          catchError(error => of(predictionActions.GetMatchContestsByMatchIdFailureAction(error)))
+        );
+      })
+  );
+
+  @Effect()
+  getMatchPlayers$ = this.actions$
+    .pipe(ofType(predictionActions.GetMatchPlayersListAction))
+    .pipe(
+      switchMap((action) => {
+        return this.predictionService.getMatchPlayersData(action.matchId).pipe(
+          switchMap( players => [
+            predictionActions.GetMatchPlayersListSuccessAction({playersList : players})
+          ]),
+          catchError(error => of(predictionActions.GetMatchPlayersListFailureAction(error)))
+        );
+      })
+  );
+
+  @Effect()
+  getContestUsers$ = this.actions$
+    .pipe(ofType(predictionActions.GetContestJoinedUsersAction))
+    .pipe(
+      switchMap((action) => {
+        return this.predictionService.getContestUsers(action.contestId).pipe(
+          switchMap( users => [
+            predictionActions.GetContestJoinedUsersSuccessAction({users : users})
+          ]),
+          catchError(error => of(predictionActions.GetContestJoinedUsersFailureAction(error)))
         );
       })
   );

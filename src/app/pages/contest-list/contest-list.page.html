@@ -1,0 +1,54 @@
+<ion-content fullscreen="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-list #scheduleList>
+    <ion-item-group *ngFor="let contest of contestList" [hidden]="contestList.length === 0">
+      <ion-card>
+        <ion-card-header>
+          <div class="contest-card-header">
+            <div style="width: 50%;display:flex;flex-wrap:wrap">
+              <ion-label style="width: 100%;">Total Reward</ion-label>
+              <h4>{{contest.totalReward}} Coins</h4>
+            </div>
+            <div style="width: 50%;display: flex;justify-content: end;float: right;">
+                <ion-button color="primary" *ngIf="!contest.isJoined" (click)="joinContestAlert(contest)" [disabled]="contest.filledSpots === contest.totalSpots">
+                  Join
+                </ion-button>
+                <ion-button color="primary" (click)="viewContestDashboard(contest)" *ngIf="contest.isJoined">
+                  View
+                </ion-button>
+            </div>
+          </div>
+        </ion-card-header>
+      
+        <ion-card-content>
+          <ion-progress-bar [value]="(contest.filledSpots/contest.totalSpots)"></ion-progress-bar>
+        </ion-card-content>
+        <ion-item-divider sticky style="padding: 0px 16px 10px 16px">
+          <div style="display: flex;align-items: center; justify-content: space-between;width: 100%;">
+            <ion-label style="float:left;color: rgb(252, 52, 52);">
+              {{contest.totalSpots - contest.filledSpots}} spots left
+            </ion-label>
+            <ion-label style="float: right;">
+              {{contest.filledSpots}}//{{contest.totalSpots}}
+            </ion-label>
+          </div>
+        </ion-item-divider>
+      </ion-card>
+    </ion-item-group>
+  </ion-list>
+
+  <ion-list-header [hidden]="contestList.length > 0">
+    No Contests Found
+  </ion-list-header>
+
+  <ion-button class="make-prediction" color="primary" (click)="moveToCreatePrediction()">
+    <ion-icon name="add-circle-outline"></ion-icon> &nbsp; Make Prediction
+  </ion-button>
+</ion-content>

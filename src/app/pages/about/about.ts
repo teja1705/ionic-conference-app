@@ -1,29 +1,56 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { SuperTabs } from '@ionic-super-tabs/angular';
+import { HistoryPage } from '../history/history.page';
+import { LivePage } from '../live/live.page';
+import { UpcomingPage } from '../upcoming/upcoming.page';
+import { SuperTabsConfig } from '@ionic-super-tabs/core';
 
-import { PopoverController } from '@ionic/angular';
-
-import { PopoverPage } from '../about-popover/about-popover';
 
 @Component({
   selector: 'page-about',
   templateUrl: 'about.html',
   styleUrls: ['./about.scss'],
 })
-export class AboutPage {
-  location = 'madison';
-  conferenceDate = '2047-05-17';
+export class AboutPage implements OnInit{
 
-  selectOptions = {
-    header: 'Select a Location'
-  };
+   ios: boolean;
+   showSearchbar: boolean;
+   tabsLoaded:boolean = false;
+   selectedTabIndex = 0;
+   upcomingPage = UpcomingPage;
+   livePage = LivePage;
+   historyPage = HistoryPage;
+   @ViewChild(SuperTabs) superTabs: SuperTabs;
+ 
+   opts = {
+     icon: false,
+     label: true,
+     toolbarPos: 'top',
+     scrollable: true,
+   };
+ 
+   configure: SuperTabsConfig = {
+     debug: true,
+     allowElementScroll: false,
+   };
+ 
+ 
+   tabs = [
+     { pageName: UpcomingPage, title: 'Upcoming',id: 'upcomingPage'},
+     { pageName: LivePage, title: 'Live', id: 'livePage'},
+     { pageName: HistoryPage, title: 'History', id: 'historyPage'}
+ 
+     ];   
+ 
+   constructor(
+   ) { }
+ 
+   ngOnInit() {
+   }
+ 
+   onTabSelect(ev: any) {
+     this.selectedTabIndex = ev.index;
+     } 
 
-  constructor(public popoverCtrl: PopoverController) { }
 
-  async presentPopover(event: Event) {
-    const popover = await this.popoverCtrl.create({
-      component: PopoverPage,
-      event
-    });
-    await popover.present();
-  }
 }

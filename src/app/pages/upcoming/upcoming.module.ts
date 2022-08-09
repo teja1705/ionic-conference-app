@@ -7,14 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { UpcomingPageRoutingModule } from './upcoming-routing.module';
 
 import { UpcomingPage } from './upcoming.page';
+import { TimerComponentModule } from '../../components/timer/timer.component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    UpcomingPageRoutingModule
+    UpcomingPageRoutingModule,
+    TimerComponentModule
   ],
-  declarations: [UpcomingPage]
+  declarations: [UpcomingPage],
+  providers : []
 })
 export class UpcomingPageModule {}

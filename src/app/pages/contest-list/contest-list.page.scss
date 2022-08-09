@@ -1,0 +1,18 @@
+.contest-card-header{
+    display: flex;
+    width: 100%;
+}
+
+.make-prediction{
+    --border-radius: 20px;
+    position: fixed;
+    bottom: 25px;
+    --padding-bottom : 10px;
+    --padding-top : 10px;
+    left:50%;
+    margin-left : -25%;
+}
+
+ion-content{
+    position: relative;
+}

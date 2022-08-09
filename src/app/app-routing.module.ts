@@ -44,7 +44,33 @@ const routes: Routes = [
   {
     path: 'history',
     loadChildren: () => import('./pages/history/history.module').then( m => m.HistoryPageModule)
+  },
+  {
+    path: 'contest',
+    loadChildren: () => import('./pages/contest/contest.module').then( m => m.ContestPageModule)
+  },
+  {
+    path: 'contest-list',
+    loadChildren: () => import('./pages/contest-list/contest-list.module').then( m => m.ContestListPageModule)
+  },
+  {
+    path: 'my-contests',
+    loadChildren: () => import('./pages/my-contests/my-contests.module').then( m => m.MyContestsPageModule)
+  },
+  {
+    path: 'my-predictions',
+    loadChildren: () => import('./pages/my-predictions/my-predictions.module').then( m => m.MyPredictionsPageModule)
+  },
+  {
+    path: 'create-prediction',
+    loadChildren: () => import('./pages/create-prediction/create-prediction.module').then( m => m.CreatePredictionPageModule)
+  },
+  {
+    path: 'contest-view',
+    loadChildren: () => import('./pages/contest-view/contest-view.module').then( m => m.ContestViewPageModule)
   }
+
+
 
 ];
 

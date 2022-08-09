@@ -18,6 +18,7 @@ import { effects } from './store/prediction.effects';
 import { PredictionService } from './store/prediction.service';
 import { PredictionStoreFacade } from './store/prediction-store.facade';
 import { AppConstants } from './providers/app-constants.service';
+import { StoreDevtoolsModule  } from '@ngrx/store-devtools';
 
 @NgModule({
   imports: [
@@ -32,7 +33,10 @@ import { AppConstants } from './providers/app-constants.service';
     }),
     SuperTabsModule.forRoot(),
     StoreModule.forRoot({prediction : predictionReducer}),
-    EffectsModule.forRoot(effects)
+    EffectsModule.forRoot(effects),
+    StoreDevtoolsModule.instrument({
+      logOnly : environment.production
+    })
   ],
   declarations: [AppComponent],
   providers: [InAppBrowser, AppConstants],

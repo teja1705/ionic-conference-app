@@ -18,7 +18,16 @@ export class HistoryPage implements OnInit {
    }
 
   ngOnInit() {
-    this.predictionFacade.getHomePageHistoryMatches();
+    this.predictionFacade.getHomePageHistoryMatches("CRICKET", "123");
+  }
+
+  doRefresh(event) {
+    console.log('Begin async operation');
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
   }
 
 }

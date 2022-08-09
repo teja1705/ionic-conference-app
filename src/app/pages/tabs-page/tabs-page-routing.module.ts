@@ -27,16 +27,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../speaker-list/speaker-list.module').then(m => m.SpeakerListModule)
+            loadChildren: () => import('../about/about.module').then(m => m.AboutModule)
           },
-          {
-            path: 'session/:sessionId',
-            loadChildren: () => import('../session-detail/session-detail.module').then(m => m.SessionDetailModule)
-          },
-          {
-            path: 'speaker-details/:speakerId',
-            loadChildren: () => import('../speaker-detail/speaker-detail.module').then(m => m.SpeakerDetailModule)
-          }
         ]
       },
       {
@@ -44,7 +36,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../about/about.module').then(m => m.AboutModule)
+            loadChildren: () => import('../speaker-list/speaker-list.module').then(m => m.SpeakerListModule)
           }
         ]
       },
