@@ -14,12 +14,12 @@
           <div class="contest-card-header">
             <div style="width: 50%;display:flex;flex-wrap:wrap">
               <ion-label style="width: 100%;">Total Reward</ion-label>
-              <h4>{{contest.totalReward}} Coins</h4>
+              <h4>{{contest.reward}} Coins</h4>
             </div>
             <div style="width: 50%;display: flex;justify-content: end;float: right;">
-                <ion-button color="primary" *ngIf="!contest.isJoined" (click)="joinContestAlert(contest)" [disabled]="contest.filledSpots === contest.totalSpots">
+                <!-- <ion-button color="primary" *ngIf="!contest.isJoined" (click)="joinContestAlert(contest)" [disabled]="contest.filledSpots === contest.totalSpots">
                   Join
-                </ion-button>
+                </ion-button> -->
                 <ion-button color="primary" (click)="viewContestDashboard(contest)" *ngIf="contest.isJoined">
                   View
                 </ion-button>
@@ -28,15 +28,15 @@
         </ion-card-header>
       
         <ion-card-content>
-          <ion-progress-bar [value]="(contest.filledSpots/contest.totalSpots)"></ion-progress-bar>
+          <ion-progress-bar [value]="(contest.filledSpots/contest.spots)"></ion-progress-bar>
         </ion-card-content>
         <ion-item-divider sticky style="padding: 0px 16px 10px 16px">
           <div style="display: flex;align-items: center; justify-content: space-between;width: 100%;">
             <ion-label style="float:left;color: rgb(252, 52, 52);">
-              {{contest.totalSpots - contest.filledSpots}} spots left
+              {{contest.spots - contest.filledSpots}} spots left
             </ion-label>
             <ion-label style="float: right;">
-              {{contest.filledSpots}}//{{contest.totalSpots}}
+              {{contest.filledSpots}}/{{contest.spots}}
             </ion-label>
           </div>
         </ion-item-divider>

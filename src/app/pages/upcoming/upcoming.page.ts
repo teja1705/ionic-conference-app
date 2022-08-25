@@ -3,7 +3,10 @@ import { PredictionStoreFacade } from '../../store/prediction-store.facade';
 import { CricketMatchHomePageInfo, MatchInfo, StatusOfMatch } from '../../store/prediction.model';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AuthStoreFacade } from '../../store/auth/auth-store.facade';
+import { Profile } from '../../store/auth/model';
+import { AppUtilService } from '../../providers/app.util.service';
 
 
 @Component({
@@ -14,27 +17,35 @@ import { AlertController, ToastController } from '@ionic/angular';
 export class UpcomingPage implements OnInit {
 
   public sportList : Array<CricketMatchHomePageInfo>;
+  profile : Profile = new Profile();
 
 
   constructor(private predictionFacade : PredictionStoreFacade, private router : Router, public alertCtrl: AlertController,
-    public toastCtrl: ToastController) {
+    public toastCtrl: ToastController, private authFacade : AuthStoreFacade,
+    private appUtilService : AppUtilService,
+    private loadCtrl : LoadingController) {
     this.predictionFacade.homePageUpcomingMatches$.subscribe((list)=>{
       this.sportList = list
+    })
+    this.authFacade.userProfile$.subscribe(p => {
+      this.profile = p;
     })
    }
 
 
   ngOnInit() {
-    this.predictionFacade.getHomePageUpcomingMatches("CRICKET", "123");
+    this.predictionFacade.getHomePageUpcomingMatches("CRICKET");
   }
 
   moveToLive($event){
+    this.appUtilService.startAction(this.loadCtrl,  {content: `<span>Loading..</span>`});
     this.predictionFacade.moveMatchToLiveList($event.date, $event.id);
   }
 
   async moveToContests(match : MatchInfo){
     this.predictionFacade.setSelectedMatch(match);
-    if(match.status !== StatusOfMatch.ON_GOING && match.status !== StatusOfMatch.FINISHED){
+    this.predictionFacade.getMatchContests(match.matchId, this.profile.login.userId);
+    if(match.status !== StatusOfMatch.ON_GOING && match.status !== StatusOfMatch.COMPLETED){
       this.router.navigateByUrl('/contest');
     }
     else{
@@ -48,6 +59,11 @@ export class UpcomingPage implements OnInit {
 
   doRefresh(event) {
     console.log('Begin async operation');
+
+    this.predictionFacade.getHomePageUpcomingMatches("CRICKET");
+    if(this.profile.login.userId){
+      this.predictionFacade.getMyCoins(this.profile.login.userId);
+    }
 
     setTimeout(() => {
       console.log('Async operation has ended');

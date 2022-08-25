@@ -35,11 +35,6 @@ export const selectMatchContests = createSelector(
   (state: IPredictionStateData) => state.matchContests
 );
 
-export const selectTeamVsTeam = createSelector(
-  selectPredictionState,
-  (state: IPredictionStateData) => state.match
-);
-
 
 export const selectSelectedPlayer = createSelector(
   selectPredictionState,
@@ -115,3 +110,79 @@ export const selectSelectedContest = createSelector(
   selectPredictionState,
   (state: IPredictionStateData) => state.selectedContest
 );
+
+export const getAuthorizationIsLoading = createSelector( 
+  selectPredictionState, 
+  (state: IPredictionStateData) => state.actionInProgress
+  );
+
+export const getUserAccountProfile = createSelector( 
+  selectPredictionState, 
+  (state: IPredictionStateData) => state.profile.account
+  );
+
+export const getUserProfile = createSelector( 
+  selectPredictionState,
+  (state: IPredictionStateData) => state.profile
+);
+export const getUserBioProfile = createSelector( 
+  selectPredictionState,
+  (state: IPredictionStateData) => state.profile.bio
+);
+export const getUserNameCheckAvailable = createSelector(
+  selectPredictionState, 
+  (state: IPredictionStateData) => state.isUserNameAvailable
+ );
+ export const getUserNameCheckInProgress = createSelector(
+  selectPredictionState, 
+  (state: IPredictionStateData) => state.userNameCheckInProgress
+ );
+
+export const getIsAuthenticated = createSelector( 
+  selectPredictionState,
+  (state: IPredictionStateData) => (state.authenticated)
+  );
+
+export const getActivationInfo = createSelector( 
+  selectPredictionState, 
+  (state: IPredictionStateData) => state.activationInfo
+  );
+
+export const getIsPasswordSent = createSelector( 
+  selectPredictionState, 
+  (state: IPredictionStateData) =>  state.passwordSent);
+
+  export const notificationCount = createSelector(
+    selectPredictionState,
+    (state: IPredictionStateData) => state.notificationCount
+  );
+
+  export const getMyUpcomingMathces = createSelector(
+    selectPredictionState,
+    (state: IPredictionStateData) => state.myUpcomingMatches
+  );
+
+  export const getMyLiveMatches = createSelector(
+    selectPredictionState,
+    (state: IPredictionStateData) => state.myLiveMatches
+  );
+
+  export const getMyHistoryMatches = createSelector(
+    selectPredictionState,
+    (state: IPredictionStateData) => state.myHistoryMatches
+  );
+
+  export const getMyCoins = createSelector(
+    selectPredictionState,
+    (state: IPredictionStateData) => state.coins
+  );
+
+  export const getUnknownUserPrediction = createSelector(
+    selectPredictionState,
+    (state: IPredictionStateData) => state.unknownUserPrediction
+  );
+
+  export const getMatchScoreCard = createSelector(
+    selectPredictionState,
+    (state: IPredictionStateData) => state.matchScoreCard
+  );

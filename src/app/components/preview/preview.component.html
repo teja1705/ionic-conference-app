@@ -33,23 +33,19 @@
             <ion-col size="7">
               <ion-item detail="false" lines="none" class="speaker-item">
                 <ion-avatar slot="start">
-                  <img src="../../../assets/img/appicon.png" [alt]="player.playerName + ' profile picture'">
+                  <img src="../../../assets/img/appicon.png" [alt]="player.name + ' profile picture'">
                 </ion-avatar>
-                <ion-label *ngIf="player.isPredictedOnAPlayer">
-                  <h2>{{player.playerName}}</h2>
-                  <p>{{player.role}}</p>
-                </ion-label>
-                <ion-label *ngIf="player.isPredictedOnATeam">
-                  <h2>{{player.teamName}}</h2>
+                <ion-label>
+                  <h2>{{player.name}}</h2>
+                  <p>{{player.selectedRole}}</p>
                 </ion-label>
               </ion-item>
             </ion-col>
             <ion-col size="3">
-              <ion-label *ngIf="player.isPredictedOnAPlayer">{{player.playerMinScore}} - {{player.playerMaxScore}}</ion-label>
-              <ion-label *ngIf="player.isPredictedOnATeam">{{player.teamMinScore}} - {{player.teamMaxScore}}</ion-label>
+              <ion-label>{{player.minValue}} - {{player.maxValue}}</ion-label>
             </ion-col>
             <ion-col size="2">
-              <ion-label>{{player.ifPredictPoints}}</ion-label>
+              <ion-label>{{player.predictPoints}}</ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>

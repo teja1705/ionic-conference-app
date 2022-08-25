@@ -1,0 +1,37 @@
+
+<ion-content fullscreen="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-list #scheduleList [hidden]="sportList.length == 0">
+    <ion-item-group *ngFor="let match of sportList">
+      
+
+      <ion-card (click)="moveToContests(match)">
+        <ion-item-divider sticky>
+          <ion-label>
+            {{match.league}}
+          </ion-label>
+        </ion-item-divider>
+        <ion-card-header>
+          <ion-card-subtitle>{{match.team1}} vs {{match.team2}}</ion-card-subtitle>
+          <!-- <ion-card-title>Card Title</ion-card-title> -->
+        </ion-card-header>
+      
+        <ion-card-content>
+          <app-timer [time]="match.startTime" (timeUp)="moveToLive($event)" [date]="match.startDate" [id]="match.matchId" format="{dd}d {hh}h {mm}m {ss}s"></app-timer>
+        </ion-card-content>
+      </ion-card>
+    </ion-item-group>
+  </ion-list>
+
+  <ion-list-header [hidden]="sportList.length > 0">
+    No Matches Found
+  </ion-list-header>
+
+</ion-content>

@@ -5,7 +5,7 @@ import { CheckTutorial } from './providers/check-tutorial.service';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/app',
+    redirectTo: '/tutorial',
     pathMatch: 'full'
   },
   {
@@ -42,7 +42,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/live/live.module').then( m => m.LivePageModule)
   },
   {
-    path: 'history',
+    path: 'shop',
     loadChildren: () => import('./pages/history/history.module').then( m => m.HistoryPageModule)
   },
   {
@@ -68,7 +68,29 @@ const routes: Routes = [
   {
     path: 'contest-view',
     loadChildren: () => import('./pages/contest-view/contest-view.module').then( m => m.ContestViewPageModule)
-  }
+  },
+  {
+    path: 'activate',
+    loadChildren: () => import('./pages/activate/activate.module').then( m => m.ActivatePageModule)
+  },
+  {
+    path: 'bio-profile',
+    loadChildren: () => import('./pages/bio-profile/bio-profile.module').then( m => m.BioProfilePageModule)
+  },
+  {
+    path: 'my-upcoming-match',
+    loadChildren: () => import('./pages/my-upcoming-match/my-upcoming-match.module').then( m => m.MyUpcomingMatchPageModule)
+  },
+  {
+    path: 'my-live-match',
+    loadChildren: () => import('./pages/my-live-match/my-live-match.module').then( m => m.MyLiveMatchPageModule)
+  },
+  {
+    path: 'my-history-match',
+    loadChildren: () => import('./pages/my-history-match/my-history-match.module').then( m => m.MyHistoryMatchPageModule)
+  },
+
+
 
 
 

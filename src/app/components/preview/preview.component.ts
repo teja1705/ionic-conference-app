@@ -21,7 +21,7 @@ export class PreviewComponent implements OnInit {
 
   ngOnInit() {
     this.predictions.map((e)=>{
-      this.totalPointsPredictedFor = this.totalPointsPredictedFor + e.ifPredictPoints;
+      this.totalPointsPredictedFor = this.totalPointsPredictedFor + e.predictPoints;
     })
   }
 

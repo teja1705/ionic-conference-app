@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button animateOnScroll animationName="animated fadeInRight" color="primary" defaultHref="/app/tabs/home"></ion-back-button>
     </ion-buttons>
 
     <ion-title>Login</ion-title>
@@ -30,8 +30,13 @@
 
       <ion-item>
         <ion-label position="stacked" color="primary">Password</ion-label>
-        <ion-input [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
+        <ion-input [(ngModel)]="login.password" name="password" [type]="inputType" #password="ngModel" required>
         </ion-input>
+        <ion-buttons animateOnScroll animationName="animated fadeInDown" [class.button-disabled]="(actionInProgress$ | async) " 
+              (click)="toggleVisibility()">
+        <ion-icon *ngIf="visible" name="eye-outline"></ion-icon>
+        <ion-icon *ngIf="!visible" name="eye-off-outline"></ion-icon>
+      </ion-buttons>
       </ion-item>
 
       <ion-text color="danger">
@@ -43,11 +48,14 @@
 
     <ion-row>
       <ion-col>
-        <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
+        <ion-button (click)="loginUser()"  [class.button-disabled]="!loginForm.form.valid || (actionInProgress$ | async)" type="submit" expand="block">Login</ion-button>
       </ion-col>
       <ion-col>
-        <ion-button (click)="onSignup()" color="light" expand="block">Signup</ion-button>
+        <ion-button (click)="gotoRegister()" color="light" expand="block">Signup</ion-button>
       </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-buttons>Forgot password?</ion-buttons>
     </ion-row>
   </form>
 

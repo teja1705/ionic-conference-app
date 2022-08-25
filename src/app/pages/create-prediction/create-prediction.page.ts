@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { CricketPlayerRole, Prediction, PredictionItem, TeamsPlayerData, TeamVsTeam } from '../../store/prediction.model';
+import { CricketPlayerRole, MatchInfo, Prediction, PredictionInput, PredictionItem, TeamsPlayerData } from '../../store/prediction.model';
 import {SuperTabsConfig } from '@ionic-super-tabs/core'
 import { Router } from '@angular/router';
 import { PredictionStoreFacade } from '../../store/prediction-store.facade';
-import { ModalController } from '@ionic/angular';
+import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { PreviewComponent } from '../../components/preview/preview.component';
 import * as _ from "lodash";
+import { Profile } from '../../store/auth/model';
+import { AuthStoreFacade } from '../../store/auth/auth-store.facade';
+import { ToastControllerService } from '../../providers/toast-controller.service';
+import { AppUtilService } from '../../providers/app.util.service';
+import { AlertBottomSheetComponent } from '../../components/alert-bottom-sheet/alert-bottom-sheet.component';
 
 
 @Component({
@@ -15,21 +20,27 @@ import * as _ from "lodash";
 })
 export class CreatePredictionPage implements OnInit {
 
-  teamVsTeam : TeamVsTeam;
   _BattersCount : number = 0;
   _BowlersCount : number =0;
   _TeamsCount : number = 0;
+  _TotalCount : number= 0;
+  count : number =0;
 
   predictionItem : PredictionItem
   predictionList : Array<Prediction>;
   totalPointsPredictedFor : any = 0;
-  selectedPredictionItem : PredictionItem;
+  selectedPredictionItem : PredictionInput;
+  selectedMatch : MatchInfo
+  profile : Profile = new Profile();
+  predictionSet : Array<Prediction>;
+  isAuthenticted : boolean
 
-  constructor(private router : Router, private predictionFacade : PredictionStoreFacade, private modalCtrl : ModalController) {
-    this.predictionFacade.teamVsTeam$.subscribe((players)=>{
-      console.log(players);
-      this.teamVsTeam = players;
-    })
+  constructor(private router : Router, private predictionFacade : PredictionStoreFacade, private modalCtrl : ModalController,
+    private authFacade : AuthStoreFacade, private toastCtrl : ToastControllerService, private appUtilService : AppUtilService,
+    private loadCtrl : LoadingController) {
+      this.authFacade.authenticated$.subscribe((e)=>{
+        this.isAuthenticted = e;
+      });
     this.predictionFacade.createPredictionList$.subscribe((item)=>{
       this.predictionItem = item;
     })
@@ -39,14 +50,35 @@ export class CreatePredictionPage implements OnInit {
     this.predictionFacade.selectedPredictionItem$.subscribe((e)=>{
       this.selectedPredictionItem = e;
     })
+    this.predictionFacade.selectedMatch$.subscribe((match)=>{
+      this.selectedMatch = match;
+    })
+    this.authFacade.userProfile$.subscribe(p => {
+      this.profile = p;
+    })
+    this.predictionFacade.predictionSet$.subscribe((match)=>{
+      this.predictionSet = match;
+      this._BattersCount = 0;
+      this._BowlersCount = 0;
+      this._TeamsCount = 0;
+      this._TotalCount = 0;
+      this.predictionSet.forEach((e)=>{
+        debugger
+        if(e.selectedRole == CricketPlayerRole.BATTER){
+          this._BattersCount = this._BattersCount + 1;
+        }
+        else if(e.selectedRole == CricketPlayerRole.BOWLER){
+          this._BowlersCount = this._BowlersCount + 1;
+        }
+        else if(e.selectedRole == CricketPlayerRole.TEAM){
+          this._TeamsCount = this._TeamsCount + 1;
+        }
+        this._TotalCount = this._TotalCount + 1;
+      })
+    })
    }
 
   ngOnInit() {
-    if(this.selectedPredictionItem.id){
-      this._BattersCount = 3;
-      this._BowlersCount = 2;
-      this._TeamsCount = 1;
-    }
   }
 
   backHome(){
@@ -65,13 +97,13 @@ export class CreatePredictionPage implements OnInit {
   };
 
   changeCount($event){
-    if($event.role == CricketPlayerRole.BATSMAN){
+    if($event.role == CricketPlayerRole.BATTER){
       this._BattersCount = $event.count;
     }
     else if($event.role == CricketPlayerRole.BOWLER){
       this._BowlersCount = $event.count;
     }
-    else if($event.role == CricketPlayerRole.NONE){
+    else if($event.role == CricketPlayerRole.TEAM){
       this._TeamsCount = $event.count;
     }
   }
@@ -85,14 +117,56 @@ export class CreatePredictionPage implements OnInit {
     const { data, role } = await modal.onWillDismiss();
   }
 
+  async moveToLive($event : any){
+    // this.appUtilService.startAction(this.loadCtrl,  {content: `<span>Loading..</span>`});
+    this.predictionFacade.moveMatchToLiveList($event.date, $event.id);
+    // this.appUtilService.stopAction();
+    this.count = this.count + 1;
+    if(this.count==1){
+      const modal = await this.modalCtrl.create({
+        component: AlertBottomSheetComponent,
+        cssClass: 'alert-css',
+        backdropDismiss:false
+      });
+      modal.present();
+  
+      const { data, role } = await modal.onWillDismiss();
+  
+      if(role === 'confirm') {
+        this.count =0;
+        this.router.navigateByUrl('/app/tabs/home')
+      }
+    }
+  }
+
   create(){
-    let prediction : PredictionItem = _.cloneDeep(this.predictionItem);
-    prediction.predictions = [...this.predictionList];
-    this.predictionList.map((e)=>{
-      this.totalPointsPredictedFor = this.totalPointsPredictedFor + e.ifPredictPoints;
-    })
-    prediction.toatlPointsPredicted = this.totalPointsPredictedFor;
-    this.predictionFacade.saveMyPredictionAction(prediction);
+    this.appUtilService.startAction(this.loadCtrl,  {content: `<span>Saving your prediction..</span>`});
+   if(this.selectedPredictionItem.predictionGroup.id){
+      let predictionInput : PredictionInput = new PredictionInput();
+      let prediction : PredictionItem = _.cloneDeep(this.selectedPredictionItem.predictionGroup);
+      predictionInput.predictionGroup = prediction;
+      predictionInput.predictions = [...this.predictionList];
+      this.predictionList.map((e)=>{
+        this.totalPointsPredictedFor = this.totalPointsPredictedFor + e.predictPoints;
+      })
+      prediction.pointsPredicted = this.totalPointsPredictedFor;
+      this.predictionFacade.updatePrediction(predictionInput);
+    }
+    else{
+      let predictionInput : PredictionInput = new PredictionInput();
+      let prediction : PredictionItem = _.cloneDeep(this.predictionItem);
+      predictionInput.predictions = [...this.predictionList];
+      this.predictionList.map((e)=>{
+        this.totalPointsPredictedFor = this.totalPointsPredictedFor + e.predictPoints;
+      })
+      prediction.pointsPredicted = this.totalPointsPredictedFor;
+      prediction.matchId = this.selectedMatch.matchId;
+      prediction.pointsGained = "0";
+      prediction.predictionsCorrectCount = "0";
+      prediction.userId = this.profile.login.userId?this.profile.login.userId : "3";
+      predictionInput.predictionGroup = prediction;
+      this.predictionFacade.saveMyPredictionAction(predictionInput);
+    }
     this.router.navigateByUrl('/contest');
   }
 

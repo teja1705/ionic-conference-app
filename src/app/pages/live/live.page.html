@@ -16,10 +16,10 @@
         </ion-label>
       </ion-item-divider>
 
-      <ion-card  *ngFor="let match of sport.matches">
+      <ion-card  *ngFor="let match of sport.matches" (click)="moveToContests(match)">
         <ion-item-divider sticky>
           <ion-label>
-            {{match.League}}
+            {{match.league}}
           </ion-label>
         </ion-item-divider>
         <ion-card-header>

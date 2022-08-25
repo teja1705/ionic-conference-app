@@ -57,3 +57,5 @@ import 'zone.js'; // Included with Angular CLI.
  * Need to import at least one locale-data with intl.
  */
 // import 'intl/locale-data/jsonp/en';
+(window as any).global = window
+

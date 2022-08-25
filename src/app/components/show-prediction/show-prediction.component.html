@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button  (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <!-- <div class="ion-padding" slot="content"> -->
+    <ion-list #scheduleList>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="7">
+            <ion-label style="font-size: 14px;">
+              Player name / Team name
+            </ion-label>
+          </ion-col>
+          <ion-col size="3">
+            <ion-label style="font-size: 14px;">
+              Range
+            </ion-label>
+          </ion-col>
+          <ion-col size="2">
+            <ion-label style="font-size: 14px;" *ngIf="selectedMatch.status == 'NOT_STARTED'">
+              Predicted for
+            </ion-label>
+            <ion-label style="font-size: 14px;" *ngIf="selectedMatch.status != 'NOT_STARTED'">
+              Points Gained
+            </ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-item-group *ngFor="let player of predictionItem.predictions" [hidden]="predictionItem.predictions.length === 0">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="7">
+              <ion-item detail="false" lines="none" class="speaker-item">
+                <ion-avatar slot="start">
+                  <img src="../../../assets/img/appicon.png" [alt]="player.name + ' profile picture'">
+                </ion-avatar>
+                <ion-label>
+                  <h2>{{player.name}}</h2>
+                  <p>{{player.selectedRole}}</p>
+                </ion-label>
+              </ion-item>
+            </ion-col>
+            <ion-col size="3">
+              <ion-label>{{player.minValue}} - {{player.maxValue}}</ion-label>
+            </ion-col>
+            <ion-col size="2" *ngIf="selectedMatch.status == 'NOT_STARTED' || player.isPredictedCorrectly">
+              <ion-label>{{player.predictPoints}}</ion-label>
+            </ion-col>
+            <ion-col size="2" *ngIf="selectedMatch.status != 'NOT_STARTED' && !player.isPredictedCorrectly">
+              <ion-label>0</ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item-group>
+      <ion-item-divider sticky>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>
+                Total points gained - {{predictionItem.predictionGroup.pointsGained}}
+              </ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-label>
+                Total points predicted for - {{predictionItem.predictionGroup.pointsPredicted}}
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item-divider>
+    </ion-list>
+    <ion-list-header [hidden]="predictionItem.predictions.length > 0">
+      No Predictions Made
+    </ion-list-header>
+  <!-- </div> -->
+</ion-content>

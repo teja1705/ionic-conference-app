@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {SuperTabsConfig } from '@ionic-super-tabs/core'
 import { PredictionStoreFacade } from '../../store/prediction-store.facade';
-import { Contest, ContestJoinedUsers } from '../../store/prediction.model';
+import { Contest, ContestJoinedUsers, MatchInfo } from '../../store/prediction.model';
 
 @Component({
   selector: 'app-contest-view',
@@ -12,11 +12,15 @@ import { Contest, ContestJoinedUsers } from '../../store/prediction.model';
 export class ContestViewPage implements OnInit {
 
   selectedContest : Contest = new Contest();
+  selectedMatch : MatchInfo
 
 
   constructor(private router : Router, private predictionFacade : PredictionStoreFacade) { 
     this.predictionFacade.selectedContest$.subscribe((e)=>{
       this.selectedContest = e;
+    })
+    this.predictionFacade.selectedMatch$.subscribe((match)=>{
+      this.selectedMatch = match;
     })
   }
 

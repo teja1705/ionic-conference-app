@@ -4,7 +4,7 @@
       <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button [class.button-disabled]="!selectedPredictionItem.id" (click)="confirm()">Confirm</ion-button>
+      <ion-button [class.button-disabled]="!selectedPredictionItem.predictionGroup.id" (click)="confirm()">Confirm</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -15,9 +15,9 @@
         <ion-label>Select a prediction</ion-label>
       </ion-list-header>
       <ion-item-group *ngFor="let prediction of predictions; let i = index">
-        <ion-radio slot="start" [value]="prediction.id"></ion-radio>
+        <ion-radio slot="start" [value]="prediction.predictionGroup.id"></ion-radio>
         <ion-accordion-group [multiple]="true">
-          <ion-accordion [value]="prediction.id">
+          <ion-accordion [value]="prediction.predictionGroup.id">
             <ion-item slot="header" color="light">
               <ion-label>Prediction - {{i+1}}</ion-label>
             </ion-item>
@@ -36,12 +36,12 @@
                         Range
                       </ion-label>
                     </ion-col>
-                    <ion-col size="2.3" *ngIf="!prediction.isJoined">
+                    <ion-col size="2.3" *ngIf="selectedMatch.status == 'NOT_STARTED'">
                       <ion-label style="font-size: 14px;">
                         Predicted for
                       </ion-label>
                     </ion-col>
-                    <ion-col size="2.3" *ngIf="prediction.isJoined">
+                    <ion-col size="2.3" *ngIf="selectedMatch.status != 'NOT_STARTED'">
                       <ion-label style="font-size: 14px;">
                         Points won
                       </ion-label>
@@ -54,26 +54,25 @@
                       <ion-col size="7">
                         <ion-item detail="false" lines="none" class="speaker-item">
                           <ion-avatar slot="start">
-                            <img src="../../../assets/img/appicon.png" [alt]="player.playerName + ' profile picture'">
+                            <img src="../../../assets/img/appicon.png" [alt]="player.name + ' profile picture'">
                           </ion-avatar>
-                          <ion-label *ngIf="player.isPredictedOnAPlayer">
-                            <h2>{{player.playerName}}</h2>
-                            <p>{{player.role}}</p>
-                          </ion-label>
-                          <ion-label *ngIf="player.isPredictedOnATeam">
-                            <h2>{{player.teamName}}</h2>
+                          <ion-label>
+                            <h2>{{player.name}}</h2>
+                            <p>{{player.selectedRole}}</p>
                           </ion-label>
                         </ion-item>
                       </ion-col>
                       <ion-col size="2.7">
-                        <ion-label *ngIf="player.isPredictedOnAPlayer">{{player.playerMinScore}} - {{player.playerMaxScore}}</ion-label>
-                        <ion-label *ngIf="player.isPredictedOnATeam">{{player.teamMinScore}} - {{player.teamMaxScore}}</ion-label>
+                        <ion-label>{{player.minValue}} - {{player.maxValue}}</ion-label>
                       </ion-col>
-                      <ion-col size="2.3" *ngIf="prediction.isJoined">
-                        <ion-label>{{player.userPredictedPoints}}</ion-label>
+                      <ion-col size="2.3" *ngIf="prediction.isPredictedCorrectly">
+                        <ion-label>{{player.predictPoints}}</ion-label>
                       </ion-col>
-                      <ion-col size="2.3" *ngIf="!prediction.isJoined">
-                        <ion-label>{{player.ifPredictPoints}}</ion-label>
+                      <ion-col size="2.3" *ngIf="selectedMatch.status != 'NOT_STARTED' && !prediction.isPredictedCorrectly">
+                        <ion-label>0</ion-label>
+                      </ion-col>
+                      <ion-col size="2.3" *ngIf="selectedMatch.status == 'NOT_STARTED'">
+                        <ion-label>{{player.predictPoints}}</ion-label>
                       </ion-col>
                     </ion-row>
                   </ion-grid>
@@ -81,34 +80,22 @@
               </ion-list>
               <ion-item-divider sticky>
                 <ion-grid>
-                  <ion-row *ngIf="!prediction.isJoined">
+                  <ion-row>
                     <ion-col>
                       <ion-label>
-                        Total Points Predicted for - {{prediction.toatlPointsPredicted}}
+                        Total Points Predicted for - {{prediction.pointsPredicted}}
                       </ion-label>
                     </ion-col>
                   </ion-row>
                   <ion-row>
-                    <ion-col *ngIf="prediction.rank" size="6">
+                    <ion-col *ngIf="prediction.pointsGained" size="6">
                       <ion-label>
-                        Rank - {{prediction.rank}}
+                        Predicted - {{prediction.pointsGained}}/{{prediction.pointsPredicted}}
                       </ion-label>
                     </ion-col>
-                    <ion-col *ngIf="prediction.totalPointsGained" size="6">
+                    <ion-col *ngIf="prediction.pointsGained" size="6">
                       <ion-label>
-                        Predicted - {{prediction.totalPointsGained}}/{{prediction.toatlPointsPredicted}}
-                      </ion-label>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col *ngIf="prediction.totalPointsGained" size="6">
-                      <ion-label>
-                        % - {{(prediction.totalPointsGained/prediction.toatlPointsPredicted) * 100}}
-                      </ion-label>
-                    </ion-col>
-                    <ion-col *ngIf="prediction.coinsGained" size="6">
-                      <ion-label>
-                        Coins gained - {{prediction.coinsGained}}
+                        % - {{(prediction.pointsGained/prediction.pointsPredicted) * 100}}
                       </ion-label>
                     </ion-col>
                   </ion-row>

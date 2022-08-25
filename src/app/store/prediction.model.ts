@@ -1,8 +1,9 @@
+import { Profile, SignUpResult} from './auth/model';
 
 export enum StatusOfMatch{
     NOT_STARTED = "NOT_STARTED",
     ON_GOING = "ON_GOING",
-    FINISHED = "FINISHED"
+    COMPLETED = "COMPLETED"
 }
 
 export enum StatusOfContest{
@@ -19,11 +20,11 @@ export enum CricketFormat{
 }
 
 export enum CricketPlayerRole{
-    BATSMAN = "BATSMAN",
+    BATTER = "BATTER",
     BOWLER = "BOWLER",
     ALL_ROUNDER = "ALL_ROUNDER",
     WICKET_KEEPER = "WICKET_KEEPER",
-    NONE = "NONE"
+    TEAM = "TEAM"
 }
 
 export enum CricketWayOfPoints{
@@ -59,33 +60,56 @@ export const TEST_BAT_SCORE_LIMIT = 500;
 export const TEST_BOWL_SCORE_LIMIT = 20;
 export const TEST_TEAM_SCORE_LIMIT = 1000;
 
-export const USER_ID = "1";
-export const USER_NAME = "teja1705";
+export const USER_ID = "3";
+export const USER_NAME = "teja";
 
 
 
 export class MatchInfo{
-    id : string; //matchId
-    matchId : string;
-    team1 : string;
-    team1ShortName : string;
-    team1ImageUrl : string;
-    League : string;
-    team2 : string;
-    team2ShortName : string;
-    team2ImageUrl : string;
-    startTime : string;
-    startDate : string;
-    startMonth : string;
-    startYear : string;
-    isJoined : boolean;
-    isTeamCreated : boolean;
-    status : StatusOfMatch;
-    resultOfmatch : string;
-    isVisible : boolean;
-    isCanceled : boolean;
-    format : CricketFormat;
+    matchId: string;
+    team1Id: string;
+    team2Id: string;
+    team1: string;
+    team1ShortName: string;
+    team1ImageUrl: string;
+    league: string;
+    team2: string;
+    team2ShortName: string;
+    team2ImageUrl: string;
+    startTime: string;
+    startDate: string;
+    startMonth: string;
+    startYear: string;
+    status: StatusOfMatch;
+    result: string;
+    isVisible: boolean;
+    isCanceled: boolean;
+    format: CricketFormat;
 }
+
+
+export  class ReceivedNotification {
+
+    title: string;
+    from: string;
+    to: string;
+    type: string;
+    imageUrl: string;
+    message: string;
+    unreadNotificationCount: number;
+
+    constructor(){}
+}
+
+export class Message{
+    title: string;
+    from: string;
+    to: string;
+    type: string;
+    imageUrl: string;
+    message: string;
+    unreadNotificationCount: number;
+  }
 
 export class CricketMatchHomePageInfo{
     date : string;
@@ -97,23 +121,23 @@ export class CricketMatchHomePageInfo{
 export class Contest{
     id : string; //contestId
     matchId : string;
-    totalReward : string;
-    totalSpots : string;
+    reward : string;
+    spots : string;
     filledSpots : string
     isFull : boolean;
-    firstPlaceReward : string;
     isJoined : boolean;
     status : StatusOfContest;
     isCompleted : boolean;
     isStarted : boolean;
-    winnerName : string;
-    winnerId : string;
     isVisible : boolean;
     isCanceled : boolean;
     isWinner : boolean;
     coinsGained : string;
-    team1 : string;
-    team2 : string;
+    coinsDistributionId : string;
+    isFree : boolean
+    coinsToJoin : string;
+    rank : string;
+    
 }
 
 export class ContestUserRelation{
@@ -124,30 +148,41 @@ export class ContestUserRelation{
 
 export class ContestJoinedUsers{
     userId : string;
-    userName : string;
-    userImageUrl : string;
+    firstName : string;
+    lastName : string;
+    imageUrl : string;
     predictionGroupId : string;
-    currentRank : string;
-    previousRank : string;
+    currentRank : number;
+    previousRank : number;
     points : string;
-    isWinner : boolean;
+}
+
+export class ContestJoinRequest{
+    id: string;
+    matchId: string;
+    contestId: string;
+    userId: string;
+    predictionGroupId: string;
+    points: string;
+    currentRank: string;
+    previousRank: string;
+    isWinner: boolean;
+    coinsGained: string;
 }
 
 export class PlayerData{
-    id : any; //player Id
-    playerName : string;
-    playerCountry : string;
-    role : CricketPlayerRole;
-    playingSportName: string;
-    playingSportId : string;
-    age : string;
-    stats : any;
-    status : string;
-    playerImageUrl : string;
-    teamName : string;
-    teamShortName : string;
+    id: string;
+    firstname: string;
+    lastname: string;
+    imageUrl: string;
+    isPlayedLastMatch: boolean;
+    country: string;
+    role: CricketPlayerRole;
+    sportName: string;
+    sportId: string;
+    stats: string;
+    status: string;
     isSelected : boolean;
-    teamId : string;
     constructor(){
         this.isSelected = false;
     }
@@ -155,32 +190,22 @@ export class PlayerData{
 
 export class TeamData{
     id : string; //team id
-    teamName : string;
-    teamCountry:string;
-    playersCount:string;
+    name : string;
+    representingPlace:string;
+    sportName:string;
     stats : string;
     currentSeriesWith : string;
+    currentLeague : string;
     status : string;
-    teamShortName : string;
-    teamImageUrl : string;
+    code : string;
+    imageUrl : string;
     isSelected : boolean;
     constructor(){
         this.isSelected = false;
     }
 }
 
-export class TeamVsTeam{
-    team1 : string;
-    team1ShortName : string;
-    team2ShortName : string;
-    team2 : string;
-    startTime:string;
-    date : string;
-    format : CricketFormat;
-}
-
 export class TeamsPlayerData{
-    match : TeamVsTeam;
     bat : Array<PlayerData>;
     bowl : Array<PlayerData>;
     team : Array<TeamData>
@@ -192,54 +217,41 @@ export class TeamsPlayerData{
 }
 
 export class Prediction{
-    id : string; //prediction Id
+    id : string;
     predictionGroupId : string;
-    matchId : string;
-    isPredictedOnAPlayer : boolean;
-    isPredictedOnATeam : boolean;
-    playerId : string;
-    playerName : string;
-    playerImageUrl : string;
-    role : CricketPlayerRole;
-    format : CricketFormat;
-    playerMinScore : string;
-    playerMaxScore : string;
-    isPredictedCorrectly : boolean;
-    userPredictedPoints : string;
-    ifPredictPoints : number;
-    teamId : string;
-    teamName : string;
-    teamMinScore : string;
-    teamMaxScore : string;
-    userId : string;
-    predictedOn : CricketWayOfPoints;
+    isPlayer : Boolean;
+    isTeam : Boolean;
+    playerOrTeamId : string;
+    actualRole : string;
+    selectedRole : string;
+    minValue : string;
+    maxValue : string;
+    isPredictedCorrectly: Boolean;
+    predictPoints: number;
+    name : string;
+    imageUrl : string;
 }
 
+
 export class PredictionItem{
-    id : string; //predictionGroupId
-    matchId : string;
-    predictions : Array<Prediction>;
-    isJoined : boolean;
-    contestId : string;
-    isWinner : boolean;
-    coinsGained : string;
-    userId : string;
-    userName : string;
-    totalPointsGained : string;
-    toatlPointsPredicted : string;
-    rank : string;
-    isContestStarted : boolean;
+    id: string;
+    userId: string;
+    matchId: string;
+    pointsGained: string;
+    pointsPredicted: string;
+    predictionsCorrectCount: string;
     constructor(){
         this.id = "";
         this.matchId = "";
-        this.isJoined = false;
-        this.contestId = "";
-        this.isWinner = false;
-        this.coinsGained = "";
-        this.toatlPointsPredicted = "";
-        this.totalPointsGained = "";
-        this.rank = "";
-        this.predictions = []
+    }
+}
+
+export class PredictionInput{
+    predictionGroup : PredictionItem;
+    predictions : Array<Prediction>
+    constructor(){
+        this.predictions = [],
+        this.predictionGroup = new PredictionItem()
     }
 }
 
@@ -256,6 +268,42 @@ export class ContestMetaData{
     date : string;
 }
 
+export class Coins{
+    id: string;
+    userId : string;
+    coinsAvailble : string;
+    coinsRedeem : string;
+    countInvitedUsers : string;
+    inviteCode : string;
+    constructor(){
+        this.coinsAvailble = "0"
+    }
+}
+
+export class ScoreCard{
+    id: string;
+    matchId: string;
+    innings: string;
+    isTeam: string;
+    isPlayer: string;
+    playerOrTeamId: string;
+    name: string;
+    score: string;
+    wickets: string;
+}
+
+export class MatchScoreCard{
+    innings : string;
+    teamName: string;
+    batters : Array<ScoreCard>
+    bowlers : Array<ScoreCard>
+    team : ScoreCard
+    constructor(){
+        this.batters = [],
+        this.bowlers = []
+    }
+}
+
 export class ContestData{
     contests : Array<Contest>
     myContests : Array<Contest>
@@ -265,11 +313,19 @@ export class ContestData{
 
 export interface IPredictionStateData{
     actionInProgress : boolean
+    id_token: string;
+    loginProfileLoading: boolean;
+    profile: Profile;
+    password: any;
+    authenticated: boolean;
+    isUserNameAvailable: boolean;
+    userNameCheckInProgress: boolean,
+    activationInfo: SignUpResult;
+    passwordSent: boolean;
     upcomingMatchesHomepage : Array<CricketMatchHomePageInfo>
     liveMatchesHomepage : Array<CricketMatchHomePageInfo>
     historyMatchesHomepage : Array<CricketMatchHomePageInfo>
     matchContests : Array<Contest>
-    match : TeamVsTeam
     battersList : Array<PlayerData>
     bowlersList : Array<PlayerData>
     teamsList : Array<TeamData>
@@ -280,11 +336,18 @@ export interface IPredictionStateData{
     createPrediction : PredictionItem
     predictionSet : Array<Prediction>
     mycontests : Array<Contest>
-    myPredictions : Array<PredictionItem>
+    myPredictions : Array<PredictionInput>
     contestMetaData : ContestMetaData
-    selectedPredictionItem : PredictionItem
+    selectedPredictionItem : PredictionInput
     contestJoinedUsers : Array<ContestJoinedUsers>
     selectedContest : Contest
+    notificationCount : any
+    myUpcomingMatches : Array<MatchInfo>
+    myLiveMatches : Array<MatchInfo>
+    myHistoryMatches : Array<MatchInfo>
+    coins : Coins
+    unknownUserPrediction : PredictionInput
+    matchScoreCard : MatchScoreCard
     errorMessage : any
 }
 

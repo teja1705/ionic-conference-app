@@ -9,8 +9,8 @@
         </ion-col>
         <ion-col size="8">
           <ion-label>
-            <ion-title>{{teamVsTeam.team1ShortName}} vs {{teamVsTeam.team2ShortName}}</ion-title>
-            <app-timer [time]="teamVsTeam.startTime" [date]="teamVsTeam.date" format="{dd}d {hh}h {mm}m {ss}s"></app-timer>
+            <ion-title>{{selectedMatch.team1ShortName}} vs {{selectedMatch.team2ShortName}}</ion-title>
+            <app-timer [time]="selectedMatch.startTime" (timeUp)="moveToLive($event)" [date]="selectedMatch.startDate" format="{dd}d {hh}h {mm}m {ss}s"></app-timer>
           </ion-label>
         </ion-col>
       </ion-row>
@@ -38,34 +38,34 @@
     </super-tabs-toolbar>
     <super-tabs-container autoScrollTop>
       <super-tab>
-        <app-player-list (valueChange)="changeCount($event)"  role="BATTING"></app-player-list>
+        <app-player-list (valueChange)="changeCount($event)"  role="BATTER"></app-player-list>
         <ion-grid class="make-prediction">
           <ion-row>
             <ion-col [size]="6">
               <ion-button color="primary" size="default" (click)="preview()">
-                ({{ _BattersCount + _BowlersCount + _TeamsCount }}/6) &nbsp; Preview
+                ({{ _TotalCount }}/6) &nbsp; Preview
               </ion-button>
             </ion-col>
             <ion-col [size]="6">
               <ion-button  [class.button-disabled]="predictionList.length != 6" color="primary" size="default" (click)="create()">
-                <ion-icon name="add-outline"></ion-icon> &nbsp; Create
+                <ion-icon name="add-outline"></ion-icon> &nbsp; Save Prediction
               </ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
       </super-tab>
       <super-tab>
-        <app-player-list (valueChange)="changeCount($event)" role="BOWLING"></app-player-list>
+        <app-player-list (valueChange)="changeCount($event)" role="BOWLER"></app-player-list>
         <ion-grid class="make-prediction">
           <ion-row>
             <ion-col [size]="6">
               <ion-button color="primary" size="default" (click)="preview()">
-                ({{ _BattersCount + _BowlersCount + _TeamsCount }}/6) &nbsp; Preview
+                ({{ _TotalCount }}/6) &nbsp; Preview
               </ion-button>
             </ion-col>
             <ion-col [size]="6">
               <ion-button  [class.button-disabled]="predictionList.length != 6" color="primary" size="default" (click)="create()">
-                <ion-icon name="add-outline"></ion-icon> &nbsp; Create
+                <ion-icon name="add-outline"></ion-icon> &nbsp; Save Prediction
               </ion-button>
             </ion-col>
           </ion-row>
@@ -77,12 +77,12 @@
           <ion-row>
             <ion-col [size]="6">
               <ion-button color="primary" size="default" (click)="preview()">
-                ({{ _BattersCount + _BowlersCount + _TeamsCount }}/6) &nbsp; Preview
+                ({{ _TotalCount }}/6) &nbsp; Preview
               </ion-button>
             </ion-col>
             <ion-col [size]="6">
               <ion-button  [class.button-disabled]="predictionList.length != 6" color="primary" size="default" (click)="create()">
-                <ion-icon name="add-outline"></ion-icon> &nbsp; Create
+                <ion-icon name="add-outline"></ion-icon> &nbsp; Save Prediction
               </ion-button>
             </ion-col>
           </ion-row>

@@ -1,9 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SuperTabs } from '@ionic-super-tabs/angular';
-import { HistoryPage } from '../history/history.page';
-import { LivePage } from '../live/live.page';
-import { UpcomingPage } from '../upcoming/upcoming.page';
 import { SuperTabsConfig } from '@ionic-super-tabs/core';
+import { PredictionStoreFacade } from '../../store/prediction-store.facade';
+import { AuthStoreFacade } from '../../store/auth/auth-store.facade';
+import { Profile } from '../../store/auth/model';
+import { Coins } from '../../store/prediction.model';
+import { MyUpcomingMatchPage } from '../my-upcoming-match/my-upcoming-match.page';
+import { MyLiveMatchPage } from '../my-live-match/my-live-match.page';
+import { MyHistoryMatchPage } from '../my-history-match/my-history-match.page';
 
 
 @Component({
@@ -17,9 +21,9 @@ export class AboutPage implements OnInit{
    showSearchbar: boolean;
    tabsLoaded:boolean = false;
    selectedTabIndex = 0;
-   upcomingPage = UpcomingPage;
-   livePage = LivePage;
-   historyPage = HistoryPage;
+   upcomingPage = MyUpcomingMatchPage;
+   livePage = MyLiveMatchPage;
+   historyPage = MyHistoryMatchPage;
    @ViewChild(SuperTabs) superTabs: SuperTabs;
  
    opts = {
@@ -36,16 +40,27 @@ export class AboutPage implements OnInit{
  
  
    tabs = [
-     { pageName: UpcomingPage, title: 'Upcoming',id: 'upcomingPage'},
-     { pageName: LivePage, title: 'Live', id: 'livePage'},
-     { pageName: HistoryPage, title: 'History', id: 'historyPage'}
+     { pageName: MyUpcomingMatchPage, title: 'Upcoming',id: 'upcomingPage'},
+     { pageName: MyLiveMatchPage, title: 'Live', id: 'livePage'},
+     { pageName: MyHistoryMatchPage, title: 'History', id: 'historyPage'}
  
      ];   
+
+    profile : Profile
+    coins : Coins
  
-   constructor(
-   ) { }
+   constructor(private predictionFacade : PredictionStoreFacade, private authFacade : AuthStoreFacade) { 
+
+    this.authFacade.userProfile$.subscribe((e)=>{
+      this.profile = e;
+    })
+    this.predictionFacade.coins$.subscribe((e)=>{
+      this.coins = e;
+    })
+   }
  
    ngOnInit() {
+    this.predictionFacade.getMyMatches(this.profile.login.userId);
    }
  
    onTabSelect(ev: any) {

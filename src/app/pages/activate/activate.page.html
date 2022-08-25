@@ -1,0 +1,84 @@
+
+
+<ion-header no-border no-shadow class="no-border">
+  <ion-toolbar no-border no-shadow>
+    <ion-buttons slot="start">
+      <ion-back-button animateOnScroll animationName="animated fadeInRight" color="primary" 
+        defaultHref="app/tabs/home"  >
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title  color="primary" animateOnScroll animationName="animated fadeInRight">
+      Activate
+    </ion-title>
+  </ion-toolbar>
+  <ionic-spinner *ngIf="(actionInProgress$ | async)" color="primary" mode="indeterminate">
+  </ionic-spinner>
+</ion-header>
+<ion-content padding  class="p-0">
+    <ion-grid class="m-0 p-0" no-padding>
+      <ion-row class="m-0 p-0" align-items-center justify-content-around justify-content-center 
+        style="overflow-x: hidden;"  class="streach-v-100"> 
+        <ion-col class="m-0 p-0" size="12" align-items-center justify-content-around justify-content-center 
+                  style="text-align: center;">
+          <img  class="img-fluid" 
+                  style="position: relative;top: 14%;height: 12rem;width: 12rem;"
+              src="../../../assets//img//appicon.png">
+        </ion-col >
+        <ion-col class="m-0 p-0"  size="12" align-self-center style="text-align: center;">
+          <div [formGroup]="activationForm"  autocomplete="off" 
+                     class="streach-h-100">
+            <ion-grid class=" m-0 p-0" >
+              <ion-row class="m-0 p-0">
+                <ion-col class="m-0 p-0 pb-3" size="12">
+                  <ion-label color="primary" animateOnScroll animationName="animated fadeInDown">Check Your Email / Message for Code</ion-label>
+                </ion-col>
+                <ion-col class="m-0 p-0" size="12">
+                  <ion-item>
+                    <ion-label>Activation Code</ion-label>
+                    <ion-input type="text" formControlName="activationCode"></ion-input>
+                    <!-- <p>Check For User Name Availability</p> -->
+                  </ion-item>
+                </ion-col>
+                <ion-col class="m-0 p-0 mt-4" size="12">
+                  <ion-button type="button"  animateOnScroll animationName="animated fadeInDown"  
+                  [class.button-disabled]="!activationForm.controls.activationCode.value || (actionInProgress$ | async)" 
+                    color="primary" (click)="submitActivationCode()">
+                    Activate Profile
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+            <div  [formGroup]="requestForm"  autocomplete="off" 
+                    class=" m-0 p-0 mt-5"  >
+              <ion-grid class=" m-0 p-0">
+                <ion-row class="m-0 p-0">
+                  <ion-col size="12" class="m-0 p-0">
+                    <h5 animateOnScroll animationName="animated fadeInDown">Did Not Received Code?</h5>
+                  </ion-col>
+                  <ion-col size="12" class="m-0 p-0 mt-4">
+                    <ion-item>
+                      <ion-label>E-Mail</ion-label>
+                      <ion-input type="text" formControlName="email"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="12" class="m-0 p-0 mt-4">
+                    <ion-button type="button"   animateOnScroll animationName="animated fadeInDown" color="primary"
+                    [class.button-disabled]="!requestForm.valid || (actionInProgress$ | async)"   (click)="requestCode()">
+                      Request Activation Code
+                    </ion-button> 
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </div>
+        </ion-col>
+        <ion-col  size="12" align-self-center class="m-0 p-0 mt-4" style="text-align: center;">
+            <ion-button color="primary" (click)="gotoSignIn($event)"  
+              >Go-To SignIn 
+            </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+</ion-content>
+
+   

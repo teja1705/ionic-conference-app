@@ -33,6 +33,9 @@ export class PredictPlayerScoreComponent implements OnInit {
   @Input()
   teamOrPlayer : BehaviorSubject<string>;
 
+  @Input()
+  pRole : BehaviorSubject<CricketPlayerRole>;
+
   format_range : any;
   format_limit : any;
   lastEmittedMinValue: any
@@ -58,7 +61,8 @@ export class PredictPlayerScoreComponent implements OnInit {
         this.player = player;
       })
       this._isPlayer = true;
-      if(this.player.role === CricketPlayerRole.BATSMAN){
+      debugger
+      if(this.pRole.value == CricketPlayerRole.BATTER){
         this._isBatter = true;
       }
       else{
@@ -73,27 +77,27 @@ export class PredictPlayerScoreComponent implements OnInit {
       this._isTeam = true;
     }
     if(this.player){
-      if(this.format.value == CricketFormat.T20 && this.player.role == CricketPlayerRole.BATSMAN){
+      if(this.format.value == CricketFormat.T20 && this.pRole.value == CricketPlayerRole.BATTER){
         this.format_range = T20_BAT_SCORE_RANGE;
         this.format_limit = T20_BAT_SCORE_LIMIT;
       }
-      else if(this.format.value == CricketFormat.T20 && this.player.role == CricketPlayerRole.BOWLER){
+      else if(this.format.value == CricketFormat.T20 && this.pRole.value == CricketPlayerRole.BOWLER){
         this.format_range = T20_BOWL_WICKET_RANGE;
         this.format_limit = T20_BOWL_SCORE_LIMIT;
       }
-      else if(this.format.value == CricketFormat.ODI && this.player.role == CricketPlayerRole.BATSMAN){
+      else if(this.format.value == CricketFormat.ODI && this.pRole.value == CricketPlayerRole.BATTER){
         this.format_range = ODI_BAT_SCORE_RANGE;
         this.format_limit = ODI_BAT_SCORE_LIMIT;
       }
-      else if(this.format.value == CricketFormat.ODI && this.player.role == CricketPlayerRole.BOWLER){
+      else if(this.format.value == CricketFormat.ODI && this.pRole.value == CricketPlayerRole.BOWLER){
         this.format_range = ODI_BOWL_WICKET_RANGE;
         this.format_limit = ODI_BOWL_SCORE_LIMIT;
       }
-      else if(this.format.value == CricketFormat.TEST && this.player.role == CricketPlayerRole.BATSMAN){
+      else if(this.format.value == CricketFormat.TEST && this.pRole.value == CricketPlayerRole.BATTER){
         this.format_range = TEST_BAT_SCORE_RANGE;
         this.format_limit = TEST_BAT_SCORE_LIMIT;
       }
-      else if(this.format.value == CricketFormat.TEST && this.player.role == CricketPlayerRole.BOWLER){
+      else if(this.format.value == CricketFormat.TEST && this.pRole.value == CricketPlayerRole.BOWLER){
         this.format_range = TEST_BOWL_WICKET_RANGE;
         this.format_limit = TEST_BOWL_SCORE_LIMIT;
       }
@@ -129,168 +133,95 @@ export class PredictPlayerScoreComponent implements OnInit {
   }
 
   confirm() {
+    debugger
     let max : number
     let newPrediction : Prediction = new Prediction();
-    if(this.selectedPrediction.playerId || this.selectedPrediction.teamId){
+    if(this.selectedPrediction.playerOrTeamId){
       newPrediction.id = this.selectedPrediction.id;
-      newPrediction.format = this.selectedPrediction.format;
       // newPrediction.ifPredictPoints = this.predictPoints;
       newPrediction.isPredictedCorrectly = this.selectedPrediction.isPredictedCorrectly;
-      newPrediction.isPredictedOnAPlayer = this.selectedPrediction.isPredictedOnAPlayer;
-      newPrediction.isPredictedOnATeam = this.selectedPrediction.isPredictedOnATeam;
-      newPrediction.matchId = this.selectedPrediction.matchId;
-      newPrediction.playerId = this.selectedPrediction.playerId;
-      newPrediction.playerImageUrl = this.selectedPrediction.playerImageUrl;
-      if(this._isPlayer){
-        if(!this._isMaxTouched && this._isMinTouched){
-          newPrediction.playerMaxScore = this.lastEmittedMinValue;
+      newPrediction.playerOrTeamId = this.selectedPrediction.playerOrTeamId;
+      newPrediction.actualRole = this.selectedPrediction.actualRole;
+      newPrediction.selectedRole = this.selectedPrediction.selectedRole;
+      if(!this._isMaxTouched && this._isMinTouched){
+          newPrediction.maxValue = this.lastEmittedMinValue;
           max = this.lastEmittedMinValue;
-        }
-        else{
-          newPrediction.playerMaxScore = this.lastEmittedMaxValue;
-          max = this.lastEmittedMaxValue;
-        }
-        newPrediction.playerMinScore = this.lastEmittedMinValue;
       }
       else{
-        newPrediction.playerMaxScore = "";
-        newPrediction.playerMinScore = "";
-      }
-      if(this._isTeam){
-        if(!this._isMaxTouched && this._isMinTouched){
-          newPrediction.teamMaxScore = this.lastEmittedMinValue;
-          max = this.lastEmittedMinValue;
-        }
-        else{
-          newPrediction.teamMaxScore = this.lastEmittedMaxValue;
+          newPrediction.maxValue = this.lastEmittedMaxValue;
           max = this.lastEmittedMaxValue;
-        }
-        newPrediction.teamMinScore = this.lastEmittedMinValue;
       }
-      else{
-        newPrediction.teamMaxScore = "";
-        newPrediction.teamMinScore = "";
-      }
-      newPrediction.playerName = this.selectedPrediction.playerName;
-      newPrediction.predictedOn = this.selectedPrediction.predictedOn;
+      newPrediction.minValue = this.lastEmittedMinValue;
+      newPrediction.isPlayer = this.selectedPrediction.isPlayer;
+      newPrediction.isTeam = this.selectedPrediction.isTeam;
       newPrediction.predictionGroupId = this.selectedPrediction.predictionGroupId;
-      newPrediction.role = this.selectedPrediction.role;
-      newPrediction.teamId = this.selectedPrediction.teamId;
-      newPrediction.teamName = this.selectedPrediction.teamName;
-      newPrediction.userId = this.selectedPrediction.userId;
-      newPrediction.userPredictedPoints = this.selectedPrediction.userPredictedPoints;
       if(this._isTeam || this._isBatter){
-        newPrediction.ifPredictPoints = (this.format_range - max + this.lastEmittedMinValue) *SCORE_PER_RUN;
+        newPrediction.predictPoints = (this.format_range - max + this.lastEmittedMinValue) *SCORE_PER_RUN;
       }
       else if(this._isBowler){
-        newPrediction.ifPredictPoints = (this.format_range - max +  this.lastEmittedMinValue) * SCORE_PER_WICKET;
+        newPrediction.predictPoints = (this.format_range - max +  this.lastEmittedMinValue) * SCORE_PER_WICKET;
       }
+      newPrediction.name = this.selectedPrediction.name;
+      newPrediction.imageUrl = this.selectedPrediction.imageUrl;
+
     }
     else{
-      newPrediction.id = "";
-      newPrediction.format = this.format.value;
-      // newPrediction.ifPredictPoints = this.predictPoints;
       newPrediction.isPredictedCorrectly = false;
       if(this._isPlayer){
-        newPrediction.isPredictedOnAPlayer = true;
-        newPrediction.isPredictedOnATeam = false;
+        newPrediction.isPlayer = true;
+        newPrediction.isTeam = false;
       }
       else if(this._isTeam){
-        newPrediction.isPredictedOnAPlayer = false;
-        newPrediction.isPredictedOnATeam = true
-      }
-      newPrediction.matchId = this.selectedMatch.id;
-      if(this._isPlayer){
-        newPrediction.playerId = this.player.id;
-      }
-      else{
-        newPrediction.playerId = "";
+        newPrediction.isPlayer = false;
+        newPrediction.isTeam = true
       }
       if(this._isPlayer){
-        newPrediction.playerImageUrl = this.player.playerImageUrl;
+        newPrediction.playerOrTeamId = this.player.id;
       }
-      else{
-        newPrediction.playerImageUrl = this.team.teamImageUrl;
-      }
-      if(this._isPlayer){
-        if(!this._isMaxTouched && this._isMinTouched){
-          newPrediction.playerMaxScore = this.lastEmittedMinValue;
+      if(!this._isMaxTouched && this._isMinTouched){
+          newPrediction.maxValue = this.lastEmittedMinValue;
           max = this.lastEmittedMinValue;
-        }
-        else{
-          newPrediction.playerMaxScore = this.lastEmittedMaxValue;
+      }
+      else{
+          newPrediction.maxValue = this.lastEmittedMaxValue;
           max = this.lastEmittedMaxValue;
-        }
-        newPrediction.playerMinScore = this.lastEmittedMinValue;
       }
-      else{
-        newPrediction.playerMaxScore = "";
-        newPrediction.playerMinScore = "";
-      }
-      if(this._isPlayer){
-        newPrediction.playerName = this.player.playerName;
-      }
-      else{
-        newPrediction.playerName = "";
-      }
-      if(this._isBatter){
-        newPrediction.predictedOn = CricketWayOfPoints.BATTING;
-      }
-      else if(this._isBowler){
-        newPrediction.predictedOn = CricketWayOfPoints.BOWLING;
-      }
-      else if(this._isTeam){
-        newPrediction.predictedOn = CricketWayOfPoints.TEAM;
-      }
+      newPrediction.minValue = this.lastEmittedMinValue;
+      
       newPrediction.predictionGroupId = "";
       if(this._isBatter){
-        newPrediction.role = CricketPlayerRole.BATSMAN;
+        newPrediction.actualRole = this.player.role;
+        newPrediction.selectedRole = CricketPlayerRole.BATTER;
       }
       else if(this._isBowler){
-        newPrediction.role = CricketPlayerRole.BOWLER;
+        newPrediction.actualRole = this.player.role;
+        newPrediction.selectedRole = CricketPlayerRole.BOWLER;
       }
       else if(this._isTeam){
-        newPrediction.role = CricketPlayerRole.NONE;
+        newPrediction.actualRole = CricketPlayerRole.TEAM;
+        newPrediction.selectedRole = CricketPlayerRole.TEAM;
       }
       if(this._isTeam){
-        newPrediction.teamId = this.team.id;
+        newPrediction.playerOrTeamId = this.team.id;
       }
-      else{
-        newPrediction.teamId = "";
-      }
-      if(this._isTeam){
-        if(!this._isMaxTouched && this._isMinTouched){
-          newPrediction.teamMaxScore = this.lastEmittedMinValue;
-          max = this.lastEmittedMinValue;
-        }
-        else{
-          newPrediction.teamMaxScore = this.lastEmittedMaxValue;
-          max = this.lastEmittedMaxValue;
-        }
-        newPrediction.teamMinScore = this.lastEmittedMinValue;
-      }
-      else{
-        newPrediction.teamMaxScore = "";
-        newPrediction.teamMinScore = "";
-      }
-      if(this._isTeam){
-        newPrediction.teamName = this.team.teamName;
-      }
-      else{
-        newPrediction.teamName = "";
-      }
-      newPrediction.userId = USER_ID;
-      newPrediction.userPredictedPoints = "";
-    }
     if(this._isTeam || this._isBatter){
-      newPrediction.ifPredictPoints = (this.format_range - max + this.lastEmittedMinValue) *SCORE_PER_RUN;
+      newPrediction.predictPoints = (this.format_range - max + this.lastEmittedMinValue) *SCORE_PER_RUN;
     }
     else if(this._isBowler){
-      newPrediction.ifPredictPoints = (this.format_range - max +  this.lastEmittedMinValue) * SCORE_PER_WICKET;
+      newPrediction.predictPoints = (this.format_range - max +  this.lastEmittedMinValue) * SCORE_PER_WICKET;
     }
-    return this.modalCtrl.dismiss(newPrediction, 'confirm');
+    if(this._isTeam){
+      newPrediction.name = this.team.name;
+      newPrediction.imageUrl = this.team.imageUrl;
+    }
+    else{
+      newPrediction.name = this.player.firstname + " " + this.player.lastname;
+      newPrediction.imageUrl = this.player.imageUrl;
+    }
+    debugger
   }
-
+  return this.modalCtrl.dismiss(newPrediction, 'confirm');
+  }
 
 
   onMinChange(ev: Event) {

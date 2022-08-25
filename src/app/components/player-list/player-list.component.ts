@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { PredictionStoreFacade } from '../../store/prediction-store.facade';
-import { CricketPlayerRole, CricketWayOfPoints, MatchInfo, PlayerData, Prediction, PredictionItem, TeamData, TeamsPlayerData, TeamVsTeam, USER_ID, USER_NAME } from '../../store/prediction.model';
+import { CricketFormat, CricketPlayerRole, CricketWayOfPoints, MatchInfo, PlayerData, Prediction, PredictionInput, PredictionItem, TeamData, TeamsPlayerData, USER_ID, USER_NAME } from '../../store/prediction.model';
 import { PredictPlayerScoreComponent } from '../predict-player-score/predict-player-score.component';
 import * as _ from 'lodash';
+import { ToastControllerService } from '../../providers/toast-controller.service';
 
 @Component({
   selector: 'app-player-list',
@@ -13,17 +14,16 @@ import * as _ from 'lodash';
 })
 export class PlayerListComponent implements OnInit {
 
-  _ROLE : CricketWayOfPoints
+  _ROLE : CricketPlayerRole
   blueColor = "#20a1fef0";
   whiteColor = "white";
 
   @Output()
   valueChange = new EventEmitter()
-
-  _BattersCount : number = 0;
-  _BowlersCount : number =0;
-  _TeamsCount : number = 0;
-  _TotalCount : number = 0;
+  _BattersCount : number= 0;
+  _BowlersCount : number= 0;
+  _TeamsCount : number= 0;
+  _TotalCount : number= 0;
 
   public _isBatter : boolean = false;
   public _isBowler : boolean = false;
@@ -35,11 +35,10 @@ export class PlayerListComponent implements OnInit {
   predictionSet : Array<Prediction>
 
   @Input()
-  public set role(value: CricketWayOfPoints) {
+  public set role(value: CricketPlayerRole) {
     this._ROLE = value;
   }
 
-  teamVsTeam : TeamVsTeam;
   selectedMatch : MatchInfo
 
 
@@ -47,20 +46,38 @@ export class PlayerListComponent implements OnInit {
   isTeam : boolean;
   isPlayers : boolean
   displayTeams : Array<TeamData>
-  selectedPredictionItem : PredictionItem;
+  selectedPredictionItem : PredictionInput;
 
-  constructor(private predictionFacade : PredictionStoreFacade, private modalCtrl: ModalController, private toastCtrl : ToastController, private allertController : AlertController) {
+  constructor(private predictionFacade : PredictionStoreFacade, private modalCtrl: ModalController, private toastCtrl : ToastControllerService, private allertController : AlertController) {
     this.predictionFacade.selectedMatch$.subscribe((match)=>{
       this.selectedMatch = match;
-    })
-    this.predictionFacade.teamVsTeam$.subscribe((match)=>{
-      this.teamVsTeam = match;
     })
     this.predictionFacade.createPredictionList$.subscribe((match)=>{
       this.predictionList = match;
     })
     this.predictionFacade.predictionSet$.subscribe((match)=>{
       this.predictionSet = match;
+      this._BattersCount = 0;
+      this._BowlersCount = 0;
+      this._TeamsCount = 0;
+      this._TotalCount = 0;
+      this.predictionSet.forEach((e)=>{
+        if(e.selectedRole == CricketPlayerRole.BATTER){
+          this._BattersCount = this._BattersCount + 1;
+        }
+        else if(e.selectedRole == CricketPlayerRole.BOWLER){
+          this._BowlersCount = this._BowlersCount + 1;
+        }
+        else if(e.selectedRole == CricketPlayerRole.TEAM){
+          this._TeamsCount = this._TeamsCount + 1;
+        }
+        this._TotalCount = this._TotalCount + 1;
+      })
+
+      console.log("BATTERS COUNT---" + `${this._BattersCount}`)
+      console.log("BOWLERS COUNT---" + `${this._BowlersCount}`)
+      console.log("Teams COUNT---" + `${this._TeamsCount}`)
+
     })
     this.predictionFacade.selectedPredictionItem$.subscribe((e)=>{
       this.selectedPredictionItem = e;
@@ -68,20 +85,10 @@ export class PlayerListComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.predictionItem.matchId = this.selectedMatch.id;
+    this.predictionFacade.UnselectPlayers();
+    this.predictionItem.matchId = this.selectedMatch.matchId;
     this.predictionItem.userId = USER_ID;
-    this.predictionItem.userName = USER_NAME;
-    if(this._ROLE == CricketWayOfPoints.TEAM){
-      if(!this.selectedPredictionItem.id){
-        this.predictionFacade.createPredictionItemAction(this.predictionItem);
-      }
-      else{
-        this._BattersCount = 3;
-        this._BowlersCount = 2;
-        this._TeamsCount = 1;
-      }
-    }
-    if(this._ROLE == CricketWayOfPoints.BATTING){
+    if(this._ROLE == CricketPlayerRole.BATTER){
       this.predictionFacade.selectedBattersList$.subscribe((players)=>{
         console.log(players);
         this.displayPlayers = players;
@@ -90,7 +97,7 @@ export class PlayerListComponent implements OnInit {
       this.isTeam = false;
       this._isBatter = true;
     }
-    else if(this._ROLE == CricketWayOfPoints.BOWLING){
+    else if(this._ROLE == CricketPlayerRole.BOWLER){
       this.predictionFacade.selectedBowlersList$.subscribe((players)=>{
         console.log(players);
         this.displayPlayers = players;
@@ -99,7 +106,7 @@ export class PlayerListComponent implements OnInit {
       this.isTeam = false;
       this._isBowler = true;
     }
-    else if(this._ROLE == CricketWayOfPoints.TEAM){
+    else if(this._ROLE == CricketPlayerRole.TEAM){
       this.predictionFacade.selectedTeamsList$.subscribe((teams)=>{
         this.displayTeams = teams;
       })        
@@ -111,16 +118,20 @@ export class PlayerListComponent implements OnInit {
   async openModal(playerOrTeamInfo : any, playerOrTeam : string, ) {
     if(playerOrTeam === "PLAYER"){
       this.predictionFacade.setSelectedPlayer(playerOrTeamInfo);
+      this.predictionFacade.setSelectedPrediction(new Prediction());
     }
     else{
       this.predictionFacade.setSelectedTeam(playerOrTeamInfo);
+      this.predictionFacade.setSelectedPrediction(new Prediction());
     }
-    const format = new BehaviorSubject(this.teamVsTeam.format);
+    const format = new BehaviorSubject(this.selectedMatch.format);
     const teamOrPlayer = new BehaviorSubject(playerOrTeam);
+    const pRole = new BehaviorSubject(this._ROLE);
+    debugger
     const modal = await this.modalCtrl.create({
       component: PredictPlayerScoreComponent,
       componentProps: {
-        format, teamOrPlayer
+        format, teamOrPlayer, pRole
       },
     });
     modal.present();
@@ -130,64 +141,32 @@ export class PlayerListComponent implements OnInit {
     if (role === 'confirm') {
       // this.predictionItem.predictions = [...this.predictionItem.predictions, data];
       this.predictionFacade.pushPredictionToListAction(data);
-      if(data.role === CricketPlayerRole.BATSMAN){
-        this._BattersCount = this._BattersCount + 1;
+      if(data.selectedRole === CricketPlayerRole.BATTER){
         console.log("Batters Count-" + `${this._BattersCount}`);
-        this.valueChange.emit({role : data.role, count : this._BattersCount})
-        this.predictionFacade.togglePlayerSelection(data.playerId, data.role);
+        this.predictionFacade.togglePlayerSelection(data.playerOrTeamId, CricketPlayerRole.BATTER);
       }
-      else if(data.role === CricketPlayerRole.BOWLER){
-        this._BowlersCount = this._BowlersCount + 1;
-        this.valueChange.emit({role : data.role, count : this._BowlersCount})
-        this.predictionFacade.togglePlayerSelection(data.playerId, data.role);
+      else if(data.selectedRole === CricketPlayerRole.BOWLER){
+        this.predictionFacade.togglePlayerSelection(data.playerOrTeamId, CricketPlayerRole.BOWLER);
       }
-      else if(data.role === CricketPlayerRole.NONE){
-        this._TeamsCount = this._TeamsCount + 1;
-        this.valueChange.emit({role : data.role, count : this._TeamsCount});
-        this.predictionFacade.togglePlayerSelection(data.teamId, data.role);
+      else if(data.selectedRole === CricketPlayerRole.TEAM){
+        this.predictionFacade.togglePlayerSelection(data.playerOrTeamId, CricketPlayerRole.TEAM);
       }
       console.log(data);
-      this._TotalCount = this._TotalCount + 1;
-      console.log(this.teamVsTeam)
     }
     // console.log(this.predictionItem.predictions);
   }
 
   async openNothing(){
     if(this._isBatter){
-      const toast = await this.toastCtrl.create({
-        header: `Can't pick more than 3 batters`,
-        duration: 3000,
-        buttons: [{
-          text: 'Close',
-          role: 'cancel'
-        }]
-      });  
-      await toast.present();
+      this.toastCtrl.toastMessage(`Cant pick more than 3 batters`, 2500,'tertiary')
+    }
+    else if(this._isBowler){
+      this.toastCtrl.toastMessage(`Can't pick more than 2 Bowllers`, 2500,'tertiary')
+    }
+    else if(this.isTeam){
+      this.toastCtrl.toastMessage(`Can't pick more than a Team`, 2500,'tertiary')
+    }
   }
-  else if(this._isBowler){
-    const toast = await this.toastCtrl.create({
-      header: `Can't pick more than 2 bowllers`,
-      duration: 3000,
-      buttons: [{
-        text: 'Close',
-        role: 'cancel'
-      }]
-    });  
-    await toast.present();
-}
-else if(this.isTeam){
-  const toast = await this.toastCtrl.create({
-    header: `Can't pick more than 1 team`,
-    duration: 3000,
-    buttons: [{
-      text: 'Close',
-      role: 'cancel'
-    }]
-  });  
-  await toast.present();
-}
-}
 
 handlerMessage = '';
 
@@ -205,24 +184,13 @@ async presentAlert(player : PlayerData) {
         role: 'confirm',
         handler: () => { 
           if(this._isBatter){
-            this.predictionFacade.removePlayerFromPredictionListAction(player.id, player.role);
-            this._BattersCount = this._BattersCount -1;
-            this.valueChange.emit({role : player.role, count : this._BattersCount})
-            // let index = _.findIndex(this.predictionItem.predictions, (e : Prediction) => {
-            //   return (e.playerId == player.id && e.role == player.role);
-            // }, 0);
-            // this.predictionItem.predictions = [...this.predictionItem.predictions.slice(0, index),...this.predictionItem.predictions.slice(index+1)];
-            this.predictionFacade.popPredictionFromListAction(player.id, player.role);
+            this.predictionFacade.removePlayerFromPredictionListAction(player.id, this._ROLE);
+            debugger
+            this.predictionFacade.popPredictionFromListAction(player.id, this._ROLE);
           }
           else if(this._isBowler){
-            this.predictionFacade.removePlayerFromPredictionListAction(player.id, player.role);
-            this._BowlersCount = this._BowlersCount -1;
-            this.valueChange.emit({role : player.role, count : this._BowlersCount})
-            // let index = _.findIndex(this.predictionItem.predictions, (e : Prediction) => {
-            //   return (e.playerId == player.id && e.role == player.role);
-            // }, 0);
-            // this.predictionItem.predictions = [...this.predictionItem.predictions.slice(0, index),...this.predictionItem.predictions.slice(index+1)];
-            this.predictionFacade.popPredictionFromListAction(player.id, player.role);
+            this.predictionFacade.removePlayerFromPredictionListAction(player.id, this._ROLE);
+            this.predictionFacade.popPredictionFromListAction(player.id, this._ROLE);
           }
         }
       }
@@ -248,14 +216,8 @@ async removeTeamPredictionAlert(team : TeamData) {
         text: 'OK',
         role: 'confirm',
         handler: () => { 
-            this.predictionFacade.removePlayerFromPredictionListAction(team.id, CricketPlayerRole.NONE);
-            this._TeamsCount = this._TeamsCount -1;
-            this.valueChange.emit({role : CricketPlayerRole.NONE, count : this._TeamsCount})
-            // let index = _.findIndex(this.predictionItem.predictions, (e : Prediction) => {
-            //   return (e.teamId == team.id && e.role == CricketPlayerRole.NONE);
-            // }, 0);
-            // this.predictionItem.predictions = [...this.predictionItem.predictions.slice(0, index),...this.predictionItem.predictions.slice(index+1)];
-            this.predictionFacade.popPredictionFromListAction(team.id, CricketPlayerRole.NONE);
+            this.predictionFacade.removePlayerFromPredictionListAction(team.id, CricketPlayerRole.TEAM);
+            this.predictionFacade.popPredictionFromListAction(team.id, CricketPlayerRole.TEAM);
           }
       }
     ]
@@ -268,26 +230,28 @@ async removeTeamPredictionAlert(team : TeamData) {
 }
 
 async editPrediction(playerOrTeamInfo : any, playerOrTeam : string, ) {
+  debugger
   if(playerOrTeam === "PLAYER"){
     let index = _.findIndex(this.predictionSet, (e : Prediction) => {
-      return (e.playerId == playerOrTeamInfo.id && e.role == playerOrTeamInfo.role);
+      return (e.playerOrTeamId == playerOrTeamInfo.id && e.selectedRole == this._ROLE);
     }, 0);
     this.predictionFacade.setSelectedPrediction(this.predictionSet[index]);
     this.predictionFacade.setSelectedPlayer(playerOrTeamInfo);
   }
   else{
     let index = _.findIndex(this.predictionSet, (e : Prediction) => {
-      return e.teamId == playerOrTeamInfo.id;
+      return e.playerOrTeamId == playerOrTeamInfo.id;
     }, 0);
     this.predictionFacade.setSelectedPrediction(this.predictionSet[index]);
     this.predictionFacade.setSelectedTeam(playerOrTeamInfo);
   }
-  const format = new BehaviorSubject(this.teamVsTeam.format);
+  const format = new BehaviorSubject(this.selectedMatch.format);
   const teamOrPlayer = new BehaviorSubject(playerOrTeam);
+  const pRole = new BehaviorSubject(this._ROLE);
   const modal = await this.modalCtrl.create({
     component: PredictPlayerScoreComponent,
     componentProps: {
-      format, teamOrPlayer
+      format, teamOrPlayer, pRole
     },
   });
   modal.present();
@@ -300,10 +264,10 @@ async editPrediction(playerOrTeamInfo : any, playerOrTeam : string, ) {
     // }, 0);
     // this.predictionItem.predictions = [...this.predictionItem.predictions.slice(0, index), data, ...this.predictionItem.predictions.slice(index+1)];
     if(playerOrTeam == "PLAYER"){
-      this.predictionFacade.updatePredictionInListAction(data, playerOrTeamInfo.role)
+      this.predictionFacade.updatePredictionInListAction(data, this._ROLE);
     }
     else{
-      this.predictionFacade.updatePredictionInListAction(data, CricketPlayerRole.NONE)
+      this.predictionFacade.updatePredictionInListAction(data, CricketPlayerRole.TEAM)
     }
   }
   // console.log(this.predictionList.predictions);

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { AuthStoreFacade } from '../../store/auth/auth-store.facade';
+import { Profile } from '../../store/auth/model';
 import { PredictionStoreFacade } from '../../store/prediction-store.facade';
-import { PredictionItem } from '../../store/prediction.model';
+import { MatchInfo, PredictionInput, PredictionItem } from '../../store/prediction.model';
 
 @Component({
   selector: 'app-my-predictions',
@@ -11,13 +13,24 @@ import { PredictionItem } from '../../store/prediction.model';
 })
 export class MyPredictionsPage implements OnInit {
 
-  imageLink : string = "https://www.google.com/imgres?imgurl=https%3A%2F%2Flookaside.instagram.com%2Fseo%2Fgoogle_widget%2Fcrawler%2F%3Fmedia_id%3D2842132627112512452&imgrefurl=https%3A%2F%2Fwww.instagram.com%2Fjrntr%2F&tbnid=JBjcU_8edptwzM&vet=12ahUKEwiFtNiPhqX5AhX6_3MBHY0vB9IQMygEegUIARDkAQ..i&docid=PFK9mHtbTt-1TM&w=1440&h=1797&q=jrntr&ved=2ahUKEwiFtNiPhqX5AhX6_3MBHY0vB9IQMygEegUIARDkAQ";
 
-  myPredictions : Array<PredictionItem>;
+  myPredictions : Array<PredictionInput>;
 
-  constructor(private predictionFacade : PredictionStoreFacade, private allertController : AlertController, private router : Router) { 
+  selectedMatch : MatchInfo
+
+  profile : Profile
+
+  constructor(private predictionFacade : PredictionStoreFacade, private allertController : AlertController, private router : Router,
+    private authFacade : AuthStoreFacade) { 
     this.predictionFacade.myPredictions$.subscribe((prediction)=>{
       this.myPredictions = prediction;
+    })
+
+    this.predictionFacade.selectedMatch$.subscribe((prediction)=>{
+      this.selectedMatch = prediction;
+    })
+    this.authFacade.userProfile$.subscribe(p => {
+      this.profile = p;
     })
   }
 
@@ -50,14 +63,14 @@ export class MyPredictionsPage implements OnInit {
     // console.log(this.predictionItem.predictions);
   }
 
-  editPrediction(prediction : PredictionItem){
+  editPrediction(prediction : PredictionInput){
     this.predictionFacade.editPredictionAction(prediction);
     this.router.navigateByUrl('/create-prediction');
   }
 
   doRefresh(event) {
     console.log('Begin async operation');
-
+    this.predictionFacade.getMyPredictions(this.selectedMatch.matchId, this.profile.login.userId);
     setTimeout(() => {
       console.log('Async operation has ended');
       event.target.complete();

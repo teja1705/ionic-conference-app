@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button animateOnScroll animationName="animated fadeInRight" color="primary" defaultHref="/app/tabs/home"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Bio Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <form #bioProfileForm="ngForm" novalidate>
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked" color="primary">First Name</ion-label>
+        <ion-input [(ngModel)]="bioProfile.firstName" name="firstname" type="text" #firstname="ngModel" spellcheck="false" autocapitalize="off"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-text color="danger">
+        <p [hidden]="firstname.valid || submitted === false" class="ion-padding-start">
+          First Name is required
+        </p>
+      </ion-text>
+
+      <ion-item>
+        <ion-label position="stacked" color="primary">Last Name</ion-label>
+        <ion-input [(ngModel)]="bioProfile.lastName" name="lastname" type="text" #lastname="ngModel" spellcheck="false" autocapitalize="off"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-text color="danger">
+        <p [hidden]="lastname.valid || submitted === false" class="ion-padding-start">
+          Last Name is required
+        </p>
+      </ion-text>
+
+        <ion-item>
+          <ion-select interface="action-sheet" placeholder="Gender" [(ngModel)]="bioProfile.gender" name="gender" #gender="ngModel">
+            <ion-select-option value="MALE">Male</ion-select-option>
+            <ion-select-option value="FEMALE">Female</ion-select-option>
+            <ion-select-option value="OTHERS">Others</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-text color="danger">
+          <p [hidden]="gender.valid || submitted === false" class="ion-padding-start">
+            Gender is required
+          </p>
+        </ion-text>
+
+        <ion-item>
+          <ion-label position="stacked" color="primary">Age</ion-label>
+          <ion-input [(ngModel)]="bioProfile.age" name="age" type="text" #age="ngModel" spellcheck="false" autocapitalize="off"
+            required>
+          </ion-input>
+        </ion-item>
+  
+        <ion-text color="danger">
+          <p [hidden]="age.valid || submitted === false" class="ion-padding-start">
+            Age is required
+          </p>
+        </ion-text>
+    </ion-list>
+
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="onSubmit(bioProfileForm)"  [class.button-disabled]="!bioProfileForm.form.valid || (actionInProgress$ | async)" type="submit" expand="block">Save</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+
+</ion-content>

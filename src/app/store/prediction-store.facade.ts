@@ -3,7 +3,7 @@ import { select, Store } from "@ngrx/store";
 import * as fromPredictionState from './prediction.state';
 import * as fromPredictionAction from './prediction.action';
 import * as fromPredictionSelectors from './prediction.selector';
-import { Contest, CricketPlayerRole, MatchInfo, PlayerData, Prediction, PredictionItem, TeamData } from "./prediction.model";
+import { Contest, ContestJoinRequest, CricketPlayerRole, MatchInfo, PlayerData, Prediction, PredictionInput, PredictionItem, TeamData } from "./prediction.model";
 
 
 
@@ -18,7 +18,6 @@ export class PredictionStoreFacade {
   homePageLiveMatches$ = this.store.pipe(select(fromPredictionSelectors.selectHomePageLiveMatches));
   homePageHistoryMatches$ = this.store.pipe(select(fromPredictionSelectors.selectHomePageHistoryMatches));
   matchContests$ = this.store.pipe(select(fromPredictionSelectors.selectMatchContests));
-  teamVsTeam$ = this.store.pipe(select(fromPredictionSelectors.selectTeamVsTeam));
   selectedPlayer$ = this.store.pipe(select(fromPredictionSelectors.selectSelectedPlayer));
   selectedTeam$ = this.store.pipe(select(fromPredictionSelectors.selectSelectedTeam));
   selectedMatch$ = this.store.pipe(select(fromPredictionSelectors.selectSelectedMatch));
@@ -34,8 +33,13 @@ export class PredictionStoreFacade {
   selectedPredictionItem$ = this.store.pipe(select(fromPredictionSelectors.selectSelectedPredictionItem));
   contestJoinedUsers$ = this.store.pipe(select(fromPredictionSelectors.selectContestJoinedUsers));
   selectedContest$ = this.store.pipe(select(fromPredictionSelectors.selectSelectedContest));
-
-
+  notificationCount$ = this.store.pipe(select(fromPredictionSelectors.notificationCount));
+  myUpcomingMathces$ = this.store.pipe(select(fromPredictionSelectors.getMyUpcomingMathces));
+  myLiveMathces$ = this.store.pipe(select(fromPredictionSelectors.getMyLiveMatches));
+  myHistoryMathces$ = this.store.pipe(select(fromPredictionSelectors.getMyHistoryMatches));
+  coins$ = this.store.pipe(select(fromPredictionSelectors.getMyCoins));
+  unknownPrediction$ = this.store.pipe(select(fromPredictionSelectors.getUnknownUserPrediction));
+  matchScoreCard$ = this.store.pipe(select(fromPredictionSelectors.getMatchScoreCard));
 
 
 
@@ -45,24 +49,32 @@ export class PredictionStoreFacade {
     this.store.dispatch(fromPredictionAction.SetActionInProgressAction({inProgress: true}));
   }
 
-  getHomePageUpcomingMatches(sport : any, userId : any){
-    this.store.dispatch(fromPredictionAction.GetHomePageUpcomingMatchesAction({sport: sport, userId : userId}));
+  getHomePageUpcomingMatches(sport : any){
+    this.store.dispatch(fromPredictionAction.GetHomePageUpcomingMatchesAction({sport: sport}));
   }
 
-  getHomePageLiveMatches(sport : any, userId : any){
-    this.store.dispatch(fromPredictionAction.GetHomePageLiveMatchesAction({sport: sport, userId : userId}));
+  getHomePageLiveMatches(sport : any){
+    this.store.dispatch(fromPredictionAction.GetHomePageLiveMatchesAction({sport: sport}));
   }
 
-  getHomePageHistoryMatches(sport : any, userId : any){
-    this.store.dispatch(fromPredictionAction.GetHomePageHistoryMatchesAction({sport: sport, userId : userId}));
+  getHomePageHistoryMatches(sport : any){
+    this.store.dispatch(fromPredictionAction.GetHomePageHistoryMatchesAction({sport: sport}));
   }
 
   moveMatchToLiveList(date : string, id : any){
     this.store.dispatch(fromPredictionAction.MoveMatchToLiveListAction({date : date, id : id}));
   }
 
-  getMatchContests(matchId : any){
-    this.store.dispatch(fromPredictionAction.GetMatchContestsByMatchIdAction({matchId : matchId}));
+  getMatchContests(matchId : any, userId : any){
+    this.store.dispatch(fromPredictionAction.GetMatchContestsByMatchIdAction({matchId : matchId, userId : userId}));
+  }
+
+  getMyMatchContests(matchId : any, userId : any){
+    this.store.dispatch(fromPredictionAction.GetMyMatchContestsAction({matchId : matchId, userId : userId}));
+  }
+
+  getMyPredictions(matchId : any, userId : any){
+    this.store.dispatch(fromPredictionAction.GetMyPredictionsAction({matchId : matchId, userId : userId}));
   }
 
   getMatchPlayersList(matchId : any){
@@ -109,7 +121,7 @@ export class PredictionStoreFacade {
     this.store.dispatch(fromPredictionAction.UpdatePredictionInListAction({prediction : prediction, role : role}));
   }
 
-  saveMyPredictionAction(prediction : PredictionItem){
+  saveMyPredictionAction(prediction : PredictionInput){
     this.store.dispatch(fromPredictionAction.SaveMyPredictionAction({prediction : prediction}));
   }
 
@@ -121,7 +133,7 @@ export class PredictionStoreFacade {
     this.store.dispatch(fromPredictionAction.DeletePredictionAction({predictionGroupId : predictionGroupId}));
   }
 
-  editPredictionAction(prediction : PredictionItem){
+  editPredictionAction(prediction : PredictionInput){
     this.store.dispatch(fromPredictionAction.EditPredictionAction({prediction : prediction}));
   }
 
@@ -129,16 +141,49 @@ export class PredictionStoreFacade {
     this.store.dispatch(fromPredictionAction.SetContesttoMyContestAction({contest : contest}));
   }
 
-  joinContestAction(prediction : PredictionItem){
-    this.store.dispatch(fromPredictionAction.JoinContestAction({prediction : prediction}));
+  joinContestAction(request : ContestJoinRequest){
+    this.store.dispatch(fromPredictionAction.JoinContestAction({request : request}));
   }
 
-  getContestJoinedUsersAction(contestId : string){
-    this.store.dispatch(fromPredictionAction.GetContestJoinedUsersAction({contestId : contestId}));
+  getContestJoinedUsersAction(contestId : string, userId : any){
+    this.store.dispatch(fromPredictionAction.GetContestJoinedUsersAction({contestId : contestId, userId : userId}));
   }
 
   setSelectedContest(contest : Contest){
     this.store.dispatch(fromPredictionAction.SetSelectedContestAction({contest : contest}));
   }
+
+  updatePrediction(prediction : PredictionInput){
+    this.store.dispatch(fromPredictionAction.UpdatePredictionAction({prediction : prediction}));
+  }
+
+  setUnreadNotificationCount(count : number){
+    this.store.dispatch(fromPredictionAction.SetUnreadNotificationCount({count : count}));
+  }
+
+  getMyMatches(userId : any){
+    this.store.dispatch(fromPredictionAction.GetMyMatchesAction({userId : userId}));
+  }
+
+  getMyCoins(userId : any){
+    this.store.dispatch(fromPredictionAction.GetMyCoinsAction({userId : userId}));
+  }
+
+  setIsHomeTab(homeTab : boolean){
+    this.store.dispatch(fromPredictionAction.SetTabChangeAction({home : homeTab}));
+  }
+
+  UnselectPlayers(){
+    this.store.dispatch(fromPredictionAction.UnselectPlayersAction());
+  }
+
+  getUnknownUserPrediction(groupId : any){
+    this.store.dispatch(fromPredictionAction.GetUnknownUserPredictionsAction({groupId : groupId}));
+  }
+
+  getMatchScoreCard(matchId : any){
+    this.store.dispatch(fromPredictionAction.GetMatchScoreCardAction({matchId : matchId}));
+  }
+
 
 }

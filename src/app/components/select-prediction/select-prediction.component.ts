@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { PredictionStoreFacade } from '../../store/prediction-store.facade';
-import { PredictionItem } from '../../store/prediction.model';
+import { MatchInfo, PredictionInput, PredictionItem } from '../../store/prediction.model';
 import * as _ from 'lodash';
 
 @Component({
@@ -11,13 +11,19 @@ import * as _ from 'lodash';
 })
 export class SelectPredictionComponent implements OnInit {
 
-  public predictions : Array<PredictionItem>
-  selectedPredictionItem : PredictionItem = new PredictionItem();
+  public predictions : Array<PredictionInput>
+  selectedPredictionItem : PredictionInput = new PredictionInput();
+
+  selectedMatch : MatchInfo
 
   constructor(private modalCtrl : ModalController, private predictionFacade : PredictionStoreFacade) { 
     this.predictionFacade.myPredictions$.subscribe((e)=>{
       debugger
       this.predictions = e;
+    })
+
+    this.predictionFacade.selectedMatch$.subscribe((match)=>{
+      this.selectedMatch = match;
     })
   }
 
@@ -35,8 +41,8 @@ export class SelectPredictionComponent implements OnInit {
   }
 
   selectedPrediction($event){
-    let index = _.findIndex(this.predictions, (e : PredictionItem) => {
-      return e.id == $event.target.value;
+    let index = _.findIndex(this.predictions, (e : PredictionInput) => {
+      return e.predictionGroup.id == $event.target.value;
     }, 0);
 
     this.selectedPredictionItem = this.predictions[index];

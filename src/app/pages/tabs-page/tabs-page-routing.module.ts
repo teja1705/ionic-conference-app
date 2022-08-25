@@ -32,7 +32,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'history',
+        path: 'shop',
         children: [
           {
             path: '',

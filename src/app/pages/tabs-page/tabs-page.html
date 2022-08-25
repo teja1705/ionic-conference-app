@@ -6,14 +6,14 @@
       <ion-label>Home</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="myMatches">
-      <ion-icon name="football"></ion-icon>
+    <ion-tab-button tab="myMatches" *ngIf="isAuthenticted">
+      <ion-icon name="trophy-outline"></ion-icon>      
       <ion-label>My Matches</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="history">
-      <ion-icon name="time"></ion-icon>
-      <ion-label>History</ion-label>
+    <ion-tab-button tab="shop">
+      <ion-icon name="cart-outline"></ion-icon>      
+      <ion-label>Shop</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 

@@ -4,13 +4,13 @@
       <ion-row>
         <ion-col size="2">
           <ion-buttons>
-            <ion-icon name="arrow-back-outline" (click)="backHome()"></ion-icon>
+            <ion-back-button animateOnScroll animationName="animated fadeInRight" defaultHref="/contest"  ></ion-back-button>
           </ion-buttons>
         </ion-col>
         <ion-col size="10">
           <ion-row>
             <ion-col>
-              <ion-title>{{selectedContest.team1}} vs {{selectedContest.team2}}</ion-title>
+              <ion-title>{{selectedMatch.team1ShortName}} vs {{selectedMatch.team2ShortName}}</ion-title>
             </ion-col>
           </ion-row>
         </ion-col>
@@ -30,7 +30,11 @@
     </super-tab-button>
     <super-tab-button>
       <!-- <ion-icon name="contacts"></ion-icon> -->
-      <ion-label>Winings</ion-label>
+      <ion-label>Scorecard</ion-label>
+    </super-tab-button>
+    <super-tab-button>
+      <!-- <ion-icon name="person"></ion-icon> -->
+      <ion-label>Winnings</ion-label>
     </super-tab-button>
     <super-tab-button>
       <!-- <ion-icon name="person"></ion-icon> -->
@@ -42,10 +46,13 @@
         <app-contest-leaderboard></app-contest-leaderboard>
       </super-tab>
       <super-tab>
-        <!-- <ion-nav [root]="winningsPage"></ion-nav> -->
+       <app-scorecard></app-scorecard>
       </super-tab>
       <super-tab>
-        <!-- <ion-nav [root]="rulesPage"></ion-nav> -->
+        Rules
+      </super-tab>
+      <super-tab>
+        scorecard
       </super-tab>
     </super-tabs-container>
     </super-tabs>

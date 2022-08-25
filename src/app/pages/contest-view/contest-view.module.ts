@@ -11,6 +11,8 @@ import { SuperTabsModule } from '@ionic-super-tabs/angular';
 import { ContestLeaderboardComponent } from '../../components/contest-leaderboard/contest-leaderboard.component';
 import { ContestWinningComponent } from '../../components/contest-winning/contest-winning.component';
 import { ContestRulesComponent } from '../../components/contest-rules/contest-rules.component';
+import { ShowPredictionComponent } from '../../components/show-prediction/show-prediction.component';
+import { ScorecardComponent } from '../../components/scorecard/scorecard.component';
 
 @NgModule({
   imports: [
@@ -20,7 +22,7 @@ import { ContestRulesComponent } from '../../components/contest-rules/contest-ru
     ContestViewPageRoutingModule,
     SuperTabsModule
   ],
-  declarations: [ContestViewPage, ContestLeaderboardComponent, ContestWinningComponent, ContestRulesComponent],
-  exports : [ContestLeaderboardComponent, ContestWinningComponent, ContestRulesComponent]
+  declarations: [ContestViewPage, ContestLeaderboardComponent, ContestWinningComponent, ContestRulesComponent, ShowPredictionComponent, ScorecardComponent],
+  exports : [ContestLeaderboardComponent, ContestWinningComponent, ContestRulesComponent, ShowPredictionComponent, ScorecardComponent]
 })
 export class ContestViewPageModule {}

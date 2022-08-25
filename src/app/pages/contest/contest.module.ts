@@ -9,6 +9,7 @@ import { ContestPageRoutingModule } from './contest-routing.module';
 import { ContestPage } from './contest.page';
 import { TimerComponentModule } from '../../components/timer/timer.component.module';
 import { SuperTabsModule } from '@ionic-super-tabs/angular';
+import { AlertBottomSheetComponent } from '../../components/alert-bottom-sheet/alert-bottom-sheet.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { SuperTabsModule } from '@ionic-super-tabs/angular';
     SuperTabsModule
   ],
   declarations: [ContestPage],
-  providers:[]
+  providers:[],
+  exports : []
 })
 export class ContestPageModule {}

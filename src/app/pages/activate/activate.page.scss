@@ -1,0 +1,64 @@
+:host {
+    .background-image {
+      // background: url($login-screen-bg-image) 0 0/100% 100% no-repeat;;
+      overflow: hidden;
+    }
+  
+    ion-content {
+      --background: rgba(255, 255, 255, 0.9);
+      overflow-y: var(--hidden);
+     
+    }
+  
+  }
+  
+  
+  /* Remove bottom border on md */
+  .header-md::after {
+    background-image: none;
+  }
+  
+  /* Remove bottom border on ios */
+  .header-ios ion-toolbar:last-child {
+    --border-width: 0;
+  }
+  
+  .form-field{
+    min-width: 200px;
+    max-width: 500px;
+  }
+  
+  .signup-page {
+    display: block;
+    // background: linear-gradient(135deg, $theme-background 22px, $theme-background-hover 22px, $theme-background-hover 24px, transparent 24px, transparent 67px, $theme-background-hover 67px, $theme-background-hover 69px, transparent 69px),
+    // linear-gradient(225deg, $theme-background 22px, $theme-background-hover 22px, $theme-background-hover 24px, transparent 24px, transparent 67px, $theme-background-hover 67px, $theme-background-hover 69px, transparent 69px) 0 64px;
+    // background-color: $theme-background;
+    // background-size: 64px 128px;
+    // height: 100%;
+    // width: 100%;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
+  
+  
+  
+  .user-name-check-button-active{
+    color: rgb(9, 123, 189) !important;
+  }
+  
+  .user-name-check-button-active:hover{
+    color: rgb(8, 87, 133) !important;
+  }
+  
+  .user-name-check-button-available-active{
+    color: green !important;
+  }
+  
+  .user-name-check-button-disabled{
+    color: silver;
+  }

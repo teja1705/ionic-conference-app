@@ -1,46 +1,128 @@
-<ion-header>
+
+<ion-header no-border class="no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button animateOnScroll animationName="animated fadeInRight" color="primary" defaultHref="/app/tabs/home"  ></ion-back-button>
     </ion-buttons>
-    <ion-title>Signup</ion-title>
+    <ion-title  color="primary" animateOnScroll animationName="animated fadeInRight">SignUp</ion-title>
   </ion-toolbar>
+  <ion-spinner *ngIf="(actionInProgress$ | async)" name="lines-small"></ion-spinner>
+  <!-- <mat-progress-bar 
+  *ngIf="(actionInProgress$ | async)" color="primary" mode="indeterminate">
+</mat-progress-bar> -->
 </ion-header>
+<ion-content  no-scroll ion-padding vertical-align-content>
+  <ion-grid  no-padding>
+    <ion-row no-padding align-items-center justify-content-around justify-content-center class="streach-v-100"> 
+      <ion-col no-padding [size]="12"  align-self-center style="text-align: center;"  >
+        <ion-grid  no-padding style="max-width: 600px;margin-top: 50px;">
+          <ion-row align-items-center justify-content-around justify-content-center 
+            class="streach-v-100" style="overflow-x: hidden;"> 
+          <ion-col  size="12" align-self-center style="text-align: center;">
+            <!-- <form [formGroup]="todo" (ngSubmit)="logForm()">
+              <ion-item>
+                <ion-label>Todo</ion-label>
+                <ion-input type="text" formControlName="title"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Description</ion-label>
+                <ion-textarea formControlName="description"></ion-textarea>
+              </ion-item>
+              <button ion-button type="submit" [class.button-disabled]="!todo.valid">Submit</button>
+            </form> -->
+            <div [formGroup]="signUpForm"  autocomplete="off" 
+                     class="streach-h-100">
+                <ion-grid class="streach-h-100">
+                  <ion-row>
+                    <ion-col size="8">
+                      <ion-item>
+                        <ion-label>User Name</ion-label>
+                        <ion-input type="text" formControlName="userName"></ion-input>
+                        <!-- <p>Check For User Name Availability</p> -->
+                      </ion-item>
+                    </ion-col> 
+                    <ion-col size="3" align-items-center justify-content-center align-self-center style="padding-top: 15px;">
+                      <ion-button 
+                              animateOnScroll animationName="animated fadeInRight" 
+                              *ngIf="!(isUserNameAvailable$ | async) && !(userNameCheckIsInProgress$ | async)" 
+                              [class.button-disabled]="signUpForm.controls.userName.errors"
+                              (click)="checkUserNameAvailabilityHandler()"
+                              color="warning" aria-label="Check For User Name Availability" >
+                        <span >
+                          <i class="fas fa-question"></i>
+                          Check
+                        </span>
+                      </ion-button>
+                      <ion-button 
+                          animateOnScroll animationName="animated fadeInRight" color="success"
+                          *ngIf="(isUserNameAvailable$ | async) && !(userNameCheckIsInProgress$ | async)" 
+                          aria-label="Check For User Name Availability">
+                          <i class="fas fa-check"></i> 
+                          Yes
+                      </ion-button>
+                      <ion-spinner *ngIf="(userNameCheckIsInProgress$ | async)" name="lines-small"></ion-spinner>
+                    </ion-col>
+                    <ion-col size="11">
+                      <ion-item>
+                        <ion-label>Password</ion-label>
+                        <ion-input #password [type]="inputType" formControlName="password"></ion-input>
+                        <ion-buttons animateOnScroll animationName="animated fadeInDown" [class.button-disabled]="(actionInProgress$ | async) " 
+                                (click)="toggleVisibility()">
+                          <ion-icon *ngIf="visible" name="eye-outline"></ion-icon>
+                          <ion-icon *ngIf="!visible" name="eye-off-outline"></ion-icon>
+                        </ion-buttons>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size="11">
+                      <ion-item>
+                        <ion-label>Password (Confirm)</ion-label>
+                        <ion-input #passwordConfirm [type]="inputType" formControlName="passwordConfirm"></ion-input>
+                        <ion-buttons animateOnScroll animationName="animated fadeInDown" [class.button-disabled]="(actionInProgress$ | async) " 
+                                (click)="toggleVisibility()">
+                          <ion-icon *ngIf="visible" name="eye-outline"></ion-icon>
+                          <ion-icon *ngIf="!visible" name="eye-off-outline"></ion-icon>
+                        </ion-buttons>
+                        <p
+                        *ngIf="passwordConfirm.value && (password.value !== passwordConfirm.value)">
+                        <span class="show-orangered">Not Matching</span>
+                        </p>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size="11">
+                      <ion-item>
+                        <ion-label>E-Mail</ion-label>
+                        <ion-input type="text" formControlName="email"></ion-input>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size="11">
+                      <ion-button animateOnScroll animationName="animated fadeInDown"  
+                            [class.button-disabled]="!signUpForm.valid || !(isUserNameAvailable$ | async) ||
+                              (userNameCheckIsInProgress$ | async) ||
+                              (signUpForm.controls.password.value !== signUpForm.controls.passwordConfirm.value) || 
+                              (actionInProgress$ | async)"
+                            color="primary" (click)="doRegister()">
+                        Submit Registration
+                      </ion-button>
+                    </ion-col>
+                    <ion-col size="11" class="mt-4">
+                      <ion-buttons animateOnScroll animationName="animated fadeInDown"
+                         (click)="gotoSignIn($event)"  
+                         color="primary" >
+                         Already have an account? Sign in here
+                      </ion-buttons>
+                    </ion-col>
+                    <ion-col size="12">
 
-<ion-content>
-
-  <div class="signup-logo">
-    <img src="assets/img/appicon.svg" alt="Ionic Logo">
-  </div>
-
-  <form #signupForm="ngForm" novalidate>
-    <ion-list lines="none">
-      <ion-item>
-        <ion-label position="stacked" color="primary">Username</ion-label>
-        <ion-input [(ngModel)]="signup.username" name="username" type="text" #username="ngModel" required>
-        </ion-input>
-      </ion-item>
-      <ion-text color="danger">
-        <p [hidden]="username.valid || submitted === false" class="ion-padding-start">
-          Username is required
-        </p>
-      </ion-text>
-
-      <ion-item>
-        <ion-label position="stacked" color="primary">Password</ion-label>
-        <ion-input [(ngModel)]="signup.password" name="password" type="password" #password="ngModel" required>
-        </ion-input>
-      </ion-item>
-      <ion-text color="danger">
-        <p [hidden]="password.valid || submitted === false" class="ion-padding-start">
-          Password is required
-        </p>
-      </ion-text>
-    </ion-list>
-
-    <div class="ion-padding">
-      <ion-button (click)="onSignup(signupForm)" type="submit" expand="block">Create</ion-button>
-    </div>
-  </form>
-
+                    </ion-col>
+                </ion-row>
+                </ion-grid>
+              </div>
+          </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+   
