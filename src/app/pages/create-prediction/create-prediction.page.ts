@@ -11,6 +11,8 @@ import { AuthStoreFacade } from '../../store/auth/auth-store.facade';
 import { ToastControllerService } from '../../providers/toast-controller.service';
 import { AppUtilService } from '../../providers/app.util.service';
 import { AlertBottomSheetComponent } from '../../components/alert-bottom-sheet/alert-bottom-sheet.component';
+import { ODI_BAT_SCORE_RANGE, ODI_BOWL_WICKET_RANGE, ODI_TEAM_SCORE_RANGE, T20_BAT_SCORE_RANGE, T20_BOWL_WICKET_RANGE, T20_TEAM_SCORE_RANGE, TEST_BAT_SCORE_RANGE, TEST_BOWL_WICKET_RANGE, TEST_TEAM_SCORE_RANGE } from '../../store/prediction.model';
+
 
 
 @Component({
@@ -34,6 +36,19 @@ export class CreatePredictionPage implements OnInit {
   profile : Profile = new Profile();
   predictionSet : Array<Prediction>;
   isAuthenticted : boolean
+
+  t20_bat = T20_BAT_SCORE_RANGE
+  t20_bowl = T20_BOWL_WICKET_RANGE
+  t20_team = T20_TEAM_SCORE_RANGE
+
+  odi_bat = ODI_BAT_SCORE_RANGE
+  odi_bowl = ODI_BOWL_WICKET_RANGE
+  odi_team = ODI_TEAM_SCORE_RANGE
+
+  test_bat = TEST_BAT_SCORE_RANGE
+  test_bowl = TEST_BOWL_WICKET_RANGE
+  test_team = TEST_TEAM_SCORE_RANGE
+
 
   constructor(private router : Router, private predictionFacade : PredictionStoreFacade, private modalCtrl : ModalController,
     private authFacade : AuthStoreFacade, private toastCtrl : ToastControllerService, private appUtilService : AppUtilService,

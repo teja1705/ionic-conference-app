@@ -4,7 +4,7 @@
       <ion-row>
         <ion-col size="4">
           <ion-buttons>
-            <ion-icon name="arrow-back-outline" (click)="backHome()"></ion-icon>
+            <ion-back-button animateOnScroll animationName="animated fadeInRight" (click)="backHome()"></ion-back-button>
           </ion-buttons>
         </ion-col>
         <ion-col size="8">
@@ -21,8 +21,12 @@
 
 <ion-content fullscreen="true">  
 
-  <super-tabs activeTabIndex="0"  [config]="config">    
-    <super-tabs-toolbar slot="top">
+  <super-tabs activeTabIndex="1"  [config]="config">    
+    <super-tabs-toolbar slot="top" scrollable="true" scrollablePadding="true">
+      <super-tab-button>
+        <!-- <ion-icon name="star"></ion-icon> -->
+        <ion-label>Rules</ion-label>
+      </super-tab-button>
     <super-tab-button>
       <!-- <ion-icon name="star"></ion-icon> -->
       <ion-label>BAT ({{_BattersCount}})</ion-label>
@@ -37,6 +41,154 @@
     </super-tab-button>
     </super-tabs-toolbar>
     <super-tabs-container autoScrollTop>
+      <super-tab class="ion-padding">
+        <h4>T20 - Rules</h4>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="3">
+              Role/Team
+            </ion-col>
+            <ion-col size="2">
+              Range 
+            </ion-col>
+            <ion-col size="7">
+              Per Run/wicket(Points) 
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Batter
+            </ion-col>
+            <ion-col size="2">
+              {{t20_bat}} 
+            </ion-col>
+            <ion-col size="7">
+              1
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Bowler
+            </ion-col>
+            <ion-col size="2">
+              {{t20_bowl}} 
+            </ion-col>
+            <ion-col size="7">
+              5
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Team
+            </ion-col>
+            <ion-col size="2">
+              {{t20_team}} 
+            </ion-col>
+            <ion-col size="7">
+              1
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+
+        <h4>ODI - Rules</h4>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="3">
+              Role/Team
+            </ion-col>
+            <ion-col size="2">
+              Range 
+            </ion-col>
+            <ion-col size="7">
+              Per Run/wicket(Points) 
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Batter
+            </ion-col>
+            <ion-col size="2">
+              {{odi_bat}} 
+            </ion-col>
+            <ion-col size="7">
+              1
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Bowler
+            </ion-col>
+            <ion-col size="2">
+              {{odi_bowl}} 
+            </ion-col>
+            <ion-col size="7">
+              5
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Team
+            </ion-col>
+            <ion-col size="2">
+              {{odi_team}} 
+            </ion-col>
+            <ion-col size="7">
+              1
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+
+
+        <h4>TEST - Rules</h4>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="3">
+              Role/Team
+            </ion-col>
+            <ion-col size="2">
+              Range 
+            </ion-col>
+            <ion-col size="7">
+              Per Run/wicket(Points) 
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Batter
+            </ion-col>
+            <ion-col size="2">
+              {{test_bat}} 
+            </ion-col>
+            <ion-col size="7">
+              1
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Bowler
+            </ion-col>
+            <ion-col size="2">
+              {{test_bowl}} 
+            </ion-col>
+            <ion-col size="7">
+              5
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="3">
+              Team
+            </ion-col>
+            <ion-col size="2">
+              {{test_team}} 
+            </ion-col>
+            <ion-col size="7">
+              1
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </super-tab>
       <super-tab>
         <app-player-list (valueChange)="changeCount($event)"  role="BATTER"></app-player-list>
         <ion-grid class="make-prediction">

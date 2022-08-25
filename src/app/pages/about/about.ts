@@ -48,6 +48,7 @@ export class AboutPage implements OnInit{
 
     profile : Profile
     coins : Coins
+    isAuthenticated : boolean
  
    constructor(private predictionFacade : PredictionStoreFacade, private authFacade : AuthStoreFacade) { 
 
@@ -56,6 +57,9 @@ export class AboutPage implements OnInit{
     })
     this.predictionFacade.coins$.subscribe((e)=>{
       this.coins = e;
+    })
+    this.authFacade.authenticated$.subscribe((e)=>{
+      this.isAuthenticated = e;
     })
    }
  

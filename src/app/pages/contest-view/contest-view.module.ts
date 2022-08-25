@@ -22,7 +22,7 @@ import { ScorecardComponent } from '../../components/scorecard/scorecard.compone
     ContestViewPageRoutingModule,
     SuperTabsModule
   ],
-  declarations: [ContestViewPage, ContestLeaderboardComponent, ContestWinningComponent, ContestRulesComponent, ShowPredictionComponent, ScorecardComponent],
-  exports : [ContestLeaderboardComponent, ContestWinningComponent, ContestRulesComponent, ShowPredictionComponent, ScorecardComponent]
+  declarations: [ContestViewPage, ContestLeaderboardComponent, ContestWinningComponent,ShowPredictionComponent, ScorecardComponent, ContestRulesComponent],
+  exports : [ContestLeaderboardComponent, ContestWinningComponent,ShowPredictionComponent, ScorecardComponent, ContestRulesComponent]
 })
 export class ContestViewPageModule {}

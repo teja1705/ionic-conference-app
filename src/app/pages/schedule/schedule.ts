@@ -8,6 +8,7 @@ import { HistoryPage } from '../history/history.page';
 import { SuperTabsConfig } from '@ionic-super-tabs/core';
 import { PredictionStoreFacade } from '../../store/prediction-store.facade';
 import { Coins } from '../../store/prediction.model';
+import { AuthStoreFacade } from '../../store/auth/auth-store.facade';
 
 
 
@@ -59,15 +60,20 @@ export class SchedulePage implements OnInit {
     ];   
 
   constructor(
-
+    private authFacade : AuthStoreFacade,
     public router: Router,
     private predictionFacade : PredictionStoreFacade
   ) { }
+
+  isAuthenticated : boolean
 
   ngOnInit() {
     this.tabsLoaded = true;
     this.predictionFacade.coins$.subscribe((e)=>{
       this.coins = e;
+    })
+    this.authFacade.authenticated$.subscribe((e)=>{
+      this.isAuthenticated = e;
     })
   }
 

@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>6 Predictions</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="isAuthenticated">
       <ion-button>
         <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
       </ion-button>
