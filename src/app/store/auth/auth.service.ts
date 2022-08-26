@@ -156,11 +156,10 @@ getBioProfile(userName: string) {
 submitActivationCode(activationCodeSubmitReqest: ActivationCodeSubmitRequest) {
  // let activate: CheckUserNameRequest = new CheckUserNameRequest();
   let url:string = this.appConstants.BASE_API_URL + this.appConstants.SUBMIT_ACTIVATION_CODE_URL;
-  url = url + '?activationCode=' + activationCodeSubmitReqest.activationCode + '&username=' + activationCodeSubmitReqest.username;
   // 
   //activate.username = 'jana';
-
-  console.log('signup: api call');
+  debugger
+  console.log(activationCodeSubmitReqest);
   return this.http
   .post<any>(url, activationCodeSubmitReqest)
   .pipe(catchError(this.handleError));
@@ -171,7 +170,7 @@ getActivationCode(activationCodeReqest: ActivationCodeRequest) {
   url = url + '?emailId='+activationCodeReqest.emailId + '&username=' + activationCodeReqest.username;
   console.log('signup: api call');
   return this.http
-    .post<any>(url, activationCodeReqest)
+    .post<any>(url, "")
     .pipe(catchError(this.handleError));
 }
 

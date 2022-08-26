@@ -485,12 +485,7 @@ const reducer = createReducer(
       mutableOn(predictionActions.LoginPreNotAuthenticatedAction, (state, action) => {
         state.actionInProgress = false;
         state.authenticated = false;
-        let actInfo: SignUpResult = new SignUpResult();
-          actInfo.emailId = action.loginResponse.emailId;
-          actInfo.status = action.loginResponse.status;
-          actInfo.username = action.loginResponse.userName;
-  
-          state.activationInfo = actInfo;
+        state.activationInfo = action.loginResponse;
       }),
       mutableOn(predictionActions.LoginAction, (state, action) => {
           state.actionInProgress = true;

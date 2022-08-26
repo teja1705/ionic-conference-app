@@ -88,7 +88,11 @@ const routes: Routes = [
   {
     path: 'my-history-match',
     loadChildren: () => import('./pages/my-history-match/my-history-match.module').then( m => m.MyHistoryMatchPageModule)
+  },  {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
   },
+
 
 
 

@@ -83,6 +83,7 @@ export class LoginPage implements OnInit, OnDestroy{
   }
 
   loginUser(){
+    this.submitted = true;
     let loginRequest = new LoginRequest();
     loginRequest.username =  this.login.username?.trim().toLowerCase();
     loginRequest.password = this.login.password?.trim();

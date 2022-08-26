@@ -47,25 +47,9 @@ export class ActivatePage implements OnInit , OnDestroy {
               // public uxFacade: AppUxStoreFacade
   ) { 
 
-    // this.deviceSize$ = this.uxFacade.deviceSize$;
-    // this.isLandScaped$ = this.uxFacade.isDeviceLandScaped$;
-    // this.isProfileActive$ = this.authFacade.isProfileActive$;
     this.activationInfo$ = this.authFacade.activationInfo$;
     this.actionInProgress$ = this.authFacade.actionInProgress$;
 
-    // this._subscriptions.push(this.isLandScaped$.subscribe(ori => {
-    //   this.isLandScaped = ori;
-    // }));
-
-    // this._subscriptions.push(this.deviceSize$.subscribe(siz => {
-    //   this.deviceSize = siz;
-    // }));
-
-    // this.isProfileActive$.subscribe(active => {
-    //   if(active){
-    //     this.router.navigateByUrl('/login');
-    //   }
-    // });
 
     let emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
 
@@ -89,9 +73,10 @@ export class ActivatePage implements OnInit , OnDestroy {
 
     this.activationInfo$.subscribe(info =>{
       // this.requestForm.controls['username'].setValue(info.username);
+      debugger
       this.email = info.emailId;
       this.userId = info.userId;
-      this.userName = info.username;
+      this.userName = info.username?info.username : info.userName;
       this.requestForm.controls['email'].setValue(info.emailId);
       // this.requestForm.controls['mobile'].setValue(info.phoneNumber);
 

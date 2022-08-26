@@ -1,13 +1,13 @@
 
 
-<ion-header no-border no-shadow class="no-border">
-  <ion-toolbar no-border no-shadow>
+<ion-header>
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button animateOnScroll animationName="animated fadeInRight" color="primary" 
         defaultHref="app/tabs/home"  >
       </ion-back-button>
     </ion-buttons>
-    <ion-title  color="primary" animateOnScroll animationName="animated fadeInRight">
+    <ion-title  animateOnScroll animationName="animated fadeInRight">
       Activate
     </ion-title>
   </ion-toolbar>
@@ -34,7 +34,7 @@
                 </ion-col>
                 <ion-col class="m-0 p-0" size="12">
                   <ion-item>
-                    <ion-label>Activation Code</ion-label>
+                    <ion-label position="stacked" color="primary">Activation Code</ion-label>
                     <ion-input type="text" formControlName="activationCode"></ion-input>
                     <!-- <p>Check For User Name Availability</p> -->
                   </ion-item>
@@ -58,7 +58,7 @@
                   </ion-col>
                   <ion-col size="12" class="m-0 p-0 mt-4">
                     <ion-item>
-                      <ion-label>E-Mail</ion-label>
+                      <ion-label position="stacked" color="primary">E-Mail</ion-label>
                       <ion-input type="text" formControlName="email"></ion-input>
                     </ion-item>
                   </ion-col>

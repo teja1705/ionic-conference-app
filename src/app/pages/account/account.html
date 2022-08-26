@@ -1,23 +1,171 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button animateOnScroll animationName="animated fadeInRight" color="primary" 
+        defaultHref="app/tabs/home">
+      </ion-back-button>
     </ion-buttons>
     <ion-title>Account</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div *ngIf="username" class="ion-padding-top ion-text-center">
+<ion-content class="ion-padding">
+  <div *ngIf="this.login.username" class="ion-padding-top ion-text-center">
     <img src="https://www.gravatar.com/avatar?d=mm&s=140" alt="avatar">
-    <h2>{{username}}</h2>
+    <h2>{{bioProfile.firstName}} {{bioProfile.lastName}}</h2>
 
-    <ion-list inset>
-      <ion-item (click)="updatePicture()">Update Picture</ion-item>
-      <ion-item (click)="changeUsername()">Change Username</ion-item>
-      <ion-item (click)="changePassword()">Change Password</ion-item>
-      <ion-item (click)="support()">Support</ion-item>
-      <ion-item (click)="logout()">Logout</ion-item>
+    <form #loginForm="ngForm" novalidate>
+      <ion-list>
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-label position="stacked" color="primary">Username</ion-label>
+              <ion-col size="12">
+                <ion-input [disabled]="true" [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off">
+                </ion-input>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+  
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-label position="stacked" color="primary">Password</ion-label>
+              <ion-col size="11">
+                <ion-input [disabled]="true" [(ngModel)]="login.password" name="password" [type]="inputType" #password="ngModel">
+                </ion-input>
+              </ion-col>
+              <ion-col size="1">
+                <ion-buttons animateOnScroll animationName="animated fadeInDown" [class.button-disabled]="(actionInProgress$ | async) " 
+                (click)="toggleVisibility()">
+                <ion-icon slot="icon-only" *ngIf="visible" name="eye-outline"></ion-icon>
+                <ion-icon slot="icon-only" *ngIf="!visible" name="eye-off-outline"></ion-icon>
+              </ion-buttons>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+
+      </ion-list>
+    </form>
+
+    <form #bioProfileForm="ngForm" novalidate>
+      <ion-list>
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-label position="stacked" color="primary">First Name</ion-label>
+              <ion-col size="12">
+                <ion-input [disabled]="!editBio" [(ngModel)]="bioProfile.firstName" name="firstname" type="text" #firstname="ngModel" spellcheck="false" autocapitalize="off" required>
+                </ion-input>
+              </ion-col>
+              <ion-col size="12">
+                <!-- <ion-text color="danger">
+                  <p [hidden]="firstname.valid || submitted === false" class="ion-padding-start">
+                    First Name is required
+                  </p>
+                </ion-text> -->
+              </ion-col>
+            </ion-row>
+            </ion-grid>
+          </ion-item>
+
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-label position="stacked" color="primary">Last Name</ion-label>
+                <ion-col size="12">
+                  <ion-input [disabled]="!editBio" [(ngModel)]="bioProfile.lastName" name="lastname" type="text" #lastname="ngModel" spellcheck="false" autocapitalize="off"
+                  required>
+                </ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <!-- <ion-text color="danger">
+                    <p [hidden]="lastname.valid || submitted === false" class="ion-padding-start">
+                      Last Name is required
+                    </p>
+                  </ion-text> -->
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-label position="stacked" color="primary">Gender</ion-label>
+                <ion-col size="12">
+                  <ion-select [disabled]="!editBio" interface="action-sheet" placeholder="Gender" [(ngModel)]="bioProfile.gender" name="gender" #gender="ngModel">
+                    <ion-select-option value="MALE">Male</ion-select-option>
+                    <ion-select-option value="FEMALE">Female</ion-select-option>
+                    <ion-select-option value="OTHERS">Others</ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <ion-col size="12">
+                  <!-- <ion-text color="danger">
+                    <p [hidden]="gender.valid || submitted === false" class="ion-padding-start">
+                      Gender is required
+                    </p>
+                  </ion-text> -->
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-label position="stacked" color="primary">Age</ion-label>
+                <ion-col size="12">
+                  <ion-input [disabled]="!editBio" [(ngModel)]="bioProfile.age" name="age" type="text" #age="ngModel" spellcheck="false" autocapitalize="off"
+                  required>
+                </ion-input>
+                </ion-col>
+                <ion-col size="12">
+                  <!-- <ion-text color="danger">
+                    <p [hidden]="age.valid || submitted === false" class="ion-padding-start">
+                      Age is required
+                    </p>
+                  </ion-text> -->
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+
+          <!-- <ion-item> -->
+            <ion-grid *ngIf="editBio">
+              <ion-row>
+                <io-col size="6">
+                  <ion-button color="light" expand="block" (click)="toggleEditBioProfile()">Cancel</ion-button>
+                </io-col>
+                <ion-col size="6">
+                  <ion-button (click)="onSubmit(bioProfileForm)"  [class.button-disabled]="!bioProfileForm.form.valid || (actionInProgress$ | async)" type="submit" expand="block">Update</ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          <!-- </ion-item> -->
+      </ion-list>
+    </form>
+
+    <ion-list>
+      <ion-list-header>
+        Actions
+      </ion-list-header>
+
+      <ion-item button (click)="toggleEditBioProfile()" detail="false" [disabled]="editBio">
+        <ion-icon slot="start" name="create-outline"></ion-icon>        
+        <ion-label>
+          Edit Bio Profile
+        </ion-label>
+      </ion-item>
+
+      <ion-item button (click)="presentAlert()" detail="false">
+        <ion-icon slot="start" name="log-out"></ion-icon>
+        <ion-label>
+          Logout
+        </ion-label>
+      </ion-item>
     </ion-list>
   </div>
 </ion-content>

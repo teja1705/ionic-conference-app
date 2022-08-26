@@ -407,7 +407,7 @@ export const LoginPreAuthenticatedAction  = createAction(
 
 export const LoginPreNotAuthenticatedAction  = createAction(
   '[Auth] -LOGIN Request Pre Not Authenticated-',
-  props<{ loginResponse: any}>()
+  props<{ loginResponse: SignUpResult}>()
 );
 
 

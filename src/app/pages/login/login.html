@@ -8,54 +8,76 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
   <div class="login-logo">
     <img src="assets/img/appicon.svg" alt="Ionic logo">
   </div>
 
-  <form #loginForm="ngForm" novalidate>
+  <form #loginForm="ngForm">
     <ion-list>
-      <ion-item>
-        <ion-label position="stacked" color="primary">Username</ion-label>
-        <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
-          required>
-        </ion-input>
-      </ion-item>
-
-      <ion-text color="danger">
-        <p [hidden]="username.valid || submitted === false" class="ion-padding-start">
-          Username is required
-        </p>
-      </ion-text>
-
-      <ion-item>
-        <ion-label position="stacked" color="primary">Password</ion-label>
-        <ion-input [(ngModel)]="login.password" name="password" [type]="inputType" #password="ngModel" required>
-        </ion-input>
-        <ion-buttons animateOnScroll animationName="animated fadeInDown" [class.button-disabled]="(actionInProgress$ | async) " 
-              (click)="toggleVisibility()">
-        <ion-icon *ngIf="visible" name="eye-outline"></ion-icon>
-        <ion-icon *ngIf="!visible" name="eye-off-outline"></ion-icon>
-      </ion-buttons>
-      </ion-item>
-
-      <ion-text color="danger">
-        <p [hidden]="password.valid || submitted === false" class="ion-padding-start">
-          Password is required
-        </p>
-      </ion-text>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item>
+              <ion-grid>
+                <ion-row>
+                  <ion-label position="stacked" color="primary">Username</ion-label>
+                  <ion-col size="12">
+                    <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+                    required>
+                  </ion-input>                  
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+            <ion-text color="danger">
+              <p [hidden]="username.valid || submitted === false" class="ion-padding-start">
+                Username is required
+              </p>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item>
+              <ion-grid>
+                <ion-row>
+                  <ion-label position="stacked" color="primary">Password</ion-label>
+                  <ion-col size="11">
+                    <ion-input [(ngModel)]="login.password" name="password" [type]="inputType" #password="ngModel" required></ion-input>
+                  </ion-col>
+                  <ion-col size="1">
+                    <ion-buttons animateOnScroll animationName="animated fadeInDown" [class.button-disabled]="(actionInProgress$ | async) " 
+                    (click)="toggleVisibility()">
+                    <ion-icon slot="icon-only" *ngIf="visible" name="eye-outline"></ion-icon>
+                    <ion-icon slot="icon-only" *ngIf="!visible" name="eye-off-outline"></ion-icon>
+                  </ion-buttons>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+            <ion-text color="danger">
+              <p [hidden]="password.valid || submitted === false" class="ion-padding-start">
+                Password is required
+              </p>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-list>
 
     <ion-row>
       <ion-col>
         <ion-button (click)="loginUser()"  [class.button-disabled]="!loginForm.form.valid || (actionInProgress$ | async)" type="submit" expand="block">Login</ion-button>
       </ion-col>
-      <ion-col>
-        <ion-button (click)="gotoRegister()" color="light" expand="block">Signup</ion-button>
-      </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-buttons>Forgot password?</ion-buttons>
+    <ion-row style="display:flex; justify-content:center;align-items:center">
+      <ion-col size="12">
+        <ion-buttons>Don't have an account?<ion-button (click)="gotoRegister()" color="primary" expand="block">Signup</ion-button></ion-buttons>
+      </ion-col>
+      <ion-col size="12">
+        <ion-buttons><ion-button (click)="gotoForgotPassword($event)" color="primary" expand="block">Forgot password?</ion-button></ion-buttons>
+      </ion-col>
     </ion-row>
   </form>
 

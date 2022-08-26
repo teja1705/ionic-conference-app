@@ -52,7 +52,7 @@ export class PredictionEffects {
               {
                 
                 console.log(' Response  == ' + loginResponse.status);
-                if(_.includes(loginResponse.status,'not-activated')){
+                if(!loginResponse.status){
                 console.log(' Response 1 == ' + loginResponse.status);
 
                 return predictionActions.LoginPreNotAuthenticatedAction({loginResponse});
@@ -395,7 +395,8 @@ export class PredictionEffects {
             map((activationResult: any) =>
             {
               let isUserActivated = _.includes(activationResult,'User Profile Not Activated');
-              if(!isUserActivated){
+              let isUserNotFound = _.includes(activationResult,'No User Found');
+              if(!isUserActivated && !isUserNotFound){
                 return predictionActions.SubmitActivationCodeSuccessAction(activationResult);
               }else{
                 this.toastCtrlService.toastMessage('Activation Failed Please Verify Code and try again', 2500, 'danger');
@@ -442,7 +443,7 @@ export class PredictionEffects {
               return this._authService.getActivationCode(activationCodeRequest).pipe(
                 map((activationResult: any) =>
                 {
-                  this.toastCtrlService.toastMessage('Email Sent with Activation Code Please check and try again', 2500, 'success');
+                  this.toastCtrlService.toastMessage('Email Sent with Activation Code Please check and try again', 3000, 'success');
                   return predictionActions.ActivationCodeRequestSuccessAction(activationResult);
                 },
                 catchError(error => of(predictionActions.ActivationCodeRequestFailureAction(error)))

@@ -10,6 +10,7 @@ import { AuthStoreFacade} from '../../store/auth/auth-store.facade';
 // import { AppUtilService } from '@app/core/providers/app.util.service';
 import { LoadingController } from '@ionic/angular';
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { AppUtilService } from '../../providers/app.util.service';
 
 
 @Component({
@@ -39,7 +40,7 @@ export class SignupPage implements OnInit, OnDestroy {
               private fb: FormBuilder,
               private cd: ChangeDetectorRef,
               public authFacade: AuthStoreFacade,
-              // public appUtilService: AppUtilService,
+              public appUtilService: AppUtilService,
               public loadCtrl: LoadingController,
   ) { 
 
@@ -97,7 +98,7 @@ export class SignupPage implements OnInit, OnDestroy {
   }
 
   doRegister() {
-
+    this.appUtilService.startAction(this.loadCtrl,  {content: `<span>Registering..</span>`});
     let loginProfile: RegisterRequest  = new RegisterRequest();
 
     loginProfile.email = this.signUpForm.controls.email.value.trim().toLowerCase();
@@ -196,7 +197,7 @@ export class SignupPage implements OnInit, OnDestroy {
   }
   
   gotoSignIn($event){
-    this.router.navigateByUrl('/app/tabs/home');
+    this.router.navigateByUrl('/login');
   }
 
   

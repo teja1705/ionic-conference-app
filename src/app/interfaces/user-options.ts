@@ -10,3 +10,8 @@ export interface BioProfileOptions{
   gender : string;
   age : string;
 }
+
+export interface ForgotPasswordOptions{
+  username: string;
+  email : string;
+}

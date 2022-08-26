@@ -60,6 +60,7 @@ export class SignUpResult{
        public status: string;
        public username: string;
        public userId : string;
+       public userName : string;
 
        constructor(){
        }
